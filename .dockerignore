@@ -1,0 +1,13 @@
+.git
+.vs
+bin/
+obj/
+publish/
+publish_v8/
+LabInventory_Backend_Deploy.zip
+LabInventory_Backend_V8_Deploy.zip
+lab-inventory-client/node_modules/
+lab-inventory-client/dist/
+*.user
+*.suo
+*.sln.docstates
