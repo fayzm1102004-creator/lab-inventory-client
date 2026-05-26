@@ -8,8 +8,20 @@ using LabInventory.API.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // ─── Database ────────────────────────────────────────────────────────
-var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL") 
-                       ?? builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+string connectionString;
+
+if (!string.IsNullOrEmpty(connectionUrl) && connectionUrl.StartsWith("postgres"))
+{
+    var databaseUri = new Uri(connectionUrl);
+    var userInfo = databaseUri.UserInfo.Split(':');
+    connectionString = $"Host={databaseUri.Host};Port={databaseUri.Port};Database={databaseUri.LocalPath.TrimStart('/')};Username={userInfo[0]};Password={userInfo[1]};Ssl Mode=Disable;";
+}
+else
+{
+    connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+                       ?? "Host=localhost;Database=LabInventory;Username=postgres;Password=postgres";
+}
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
