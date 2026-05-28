@@ -8,19 +8,17 @@ using LabInventory.API.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // ─── Database ────────────────────────────────────────────────────────
-var connectionUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
-string connectionString;
+var connectionUrl = Environment.GetEnvironmentVariable("DATABASE_URL") 
+                    ?? builder.Configuration.GetConnectionString("DefaultConnection") 
+                    ?? "Host=localhost;Database=LabInventory;Username=postgres;Password=postgres";
 
-if (!string.IsNullOrEmpty(connectionUrl) && connectionUrl.StartsWith("postgres"))
+string connectionString = connectionUrl;
+
+if (connectionUrl.StartsWith("postgres://") || connectionUrl.StartsWith("postgresql://"))
 {
     var databaseUri = new Uri(connectionUrl);
     var userInfo = databaseUri.UserInfo.Split(':');
-    connectionString = $"Host={databaseUri.Host};Port={databaseUri.Port};Database={databaseUri.LocalPath.TrimStart('/')};Username={userInfo[0]};Password={userInfo[1]};Ssl Mode=Disable;";
-}
-else
-{
-    connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
-                       ?? "Host=localhost;Database=LabInventory;Username=postgres;Password=postgres";
+    connectionString = $"Host={databaseUri.Host};Port={databaseUri.Port};Database={databaseUri.LocalPath.TrimStart('/')};Username={userInfo[0]};Password={userInfo[1]};Ssl Mode=Require;Trust Server Certificate=true;";
 }
 
 if (connectionString.Contains("Server=", StringComparison.OrdinalIgnoreCase))
