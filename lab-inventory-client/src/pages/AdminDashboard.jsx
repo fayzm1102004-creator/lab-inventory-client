@@ -17,7 +17,8 @@ export default function AdminDashboard() {
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
     materialName: '',
-    physicalLocation: '',
+    cabinet: '',
+    shelf: '',
     isAvailable: true,
     quantity: 0
   });
@@ -58,9 +59,20 @@ export default function AdminDashboard() {
   const openModal = (material = null) => {
     if (material) {
       setEditingId(material.id);
+      let cabinet = '';
+      let shelf = '';
+      const loc = material.physicalLocation || '';
+      if (loc.startsWith('دولاب: ') && loc.includes(' - رف: ')) {
+        const parts = loc.split(' - رف: ');
+        cabinet = parts[0].replace('دولاب: ', '');
+        shelf = parts[1];
+      } else {
+        cabinet = loc;
+      }
       setFormData({
         materialName: material.materialName,
-        physicalLocation: material.physicalLocation,
+        cabinet,
+        shelf,
         isAvailable: material.isAvailable,
         quantity: material.quantity
       });
@@ -68,7 +80,8 @@ export default function AdminDashboard() {
       setEditingId(null);
       setFormData({
         materialName: '',
-        physicalLocation: '',
+        cabinet: '',
+        shelf: '',
         isAvailable: true,
         quantity: 0
       });
@@ -79,10 +92,21 @@ export default function AdminDashboard() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const physicalLocation = formData.shelf 
+        ? `دولاب: ${formData.cabinet} - رف: ${formData.shelf}` 
+        : (formData.cabinet ? `دولاب: ${formData.cabinet}` : '');
+        
+      const payload = {
+        materialName: formData.materialName,
+        physicalLocation,
+        isAvailable: formData.isAvailable,
+        quantity: formData.quantity
+      };
+
       if (editingId) {
-        await updateMaterial(editingId, formData);
+        await updateMaterial(editingId, payload);
       } else {
-        await createMaterial(formData);
+        await createMaterial(payload);
       }
       setShowModal(false);
       fetchData();
@@ -291,14 +315,26 @@ export default function AdminDashboard() {
                   className="w-full px-3 py-2 rounded-lg text-sm bg-[var(--bg-hover)] border border-[var(--border-subtle)] text-[var(--text-main)] focus:outline-none focus:border-[var(--primary-500)]"
                 />
               </div>
-              <div>
-                <label className="block text-xs font-medium mb-1 text-[var(--text-muted)]">Physical Location</label>
-                <input
-                  required
-                  value={formData.physicalLocation}
-                  onChange={e => setFormData({...formData, physicalLocation: e.target.value})}
-                  className="w-full px-3 py-2 rounded-lg text-sm bg-[var(--bg-hover)] border border-[var(--border-subtle)] text-[var(--text-main)] focus:outline-none focus:border-[var(--primary-500)]"
-                />
+              <div className="flex gap-4">
+                <div className="flex-1">
+                  <label className="block text-xs font-medium mb-1 text-[var(--text-muted)]">Cabinet (الدولاب)</label>
+                  <input
+                    required
+                    value={formData.cabinet}
+                    onChange={e => setFormData({...formData, cabinet: e.target.value})}
+                    placeholder="e.g. A, 1"
+                    className="w-full px-3 py-2 rounded-lg text-sm bg-[var(--bg-hover)] border border-[var(--border-subtle)] text-[var(--text-main)] focus:outline-none focus:border-[var(--primary-500)]"
+                  />
+                </div>
+                <div className="flex-1">
+                  <label className="block text-xs font-medium mb-1 text-[var(--text-muted)]">Shelf (الرف)</label>
+                  <input
+                    value={formData.shelf}
+                    onChange={e => setFormData({...formData, shelf: e.target.value})}
+                    placeholder="e.g. 1, 2"
+                    className="w-full px-3 py-2 rounded-lg text-sm bg-[var(--bg-hover)] border border-[var(--border-subtle)] text-[var(--text-main)] focus:outline-none focus:border-[var(--primary-500)]"
+                  />
+                </div>
               </div>
               <div className="flex gap-4">
                 <div className="flex-1">
