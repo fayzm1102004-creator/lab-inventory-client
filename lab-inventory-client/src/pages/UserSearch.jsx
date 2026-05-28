@@ -1,29 +1,39 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, MapPin, Package, LogOut, FlaskConical, AlertCircle, CheckCircle, XCircle } from 'lucide-react';
+import {
+  Search, MapPin, Package, LogOut, FlaskConical,
+  AlertCircle, CheckCircle, XCircle, Archive,
+  Layers, Hash, Beaker, SearchX
+} from 'lucide-react';
 import { userSearch, userLogout } from '../api';
+
+/* ── Helper: parse "دولاب: X - رف: Y" into { cabinet, shelf } ──────── */
+function parseLocation(loc) {
+  if (!loc) return { cabinet: loc || '—', shelf: null };
+  const match = loc.match(/دولاب:\s*(.+?)\s*-\s*رف:\s*(.+)/);
+  if (match) return { cabinet: match[1].trim(), shelf: match[2].trim() };
+  return { cabinet: loc, shelf: null };
+}
 
 export default function UserSearch() {
   const navigate = useNavigate();
   const [keyword, setKeyword] = useState('');
-  const [results, setResults] = useState(null); // null = not searched yet
+  const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
   const userName = localStorage.getItem('userName') || 'User';
   const logId = parseInt(localStorage.getItem('userLogId') || '0');
 
-  // Redirect if no session
   useEffect(() => {
     if (!logId) navigate('/user/login', { replace: true });
   }, [logId, navigate]);
 
-  // Handle browser close / tab close — send logout beacon
   useEffect(() => {
     const handleBeforeUnload = () => {
       if (logId) {
         const apiUrl = import.meta.env.VITE_API_URL || '/api';
         fetch(`${apiUrl}/user/logout`, {
           method: 'POST',
-          headers: { 
+          headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Basic ' + btoa('11310561:60-dayfreetrial')
           },
@@ -51,17 +61,21 @@ export default function UserSearch() {
   }, [keyword, logId]);
 
   const handleLogout = async () => {
-    try {
-      await userLogout(logId);
-    } catch { /* best effort */ }
+    try { await userLogout(logId); } catch { /* best effort */ }
     localStorage.removeItem('userLogId');
     localStorage.removeItem('userName');
     navigate('/', { replace: true });
   };
 
+  /* ── Stats from results ──────────────────────────────────────────── */
+  const totalResults = results?.length || 0;
+  const availableCount = results?.filter(m => m.isAvailable).length || 0;
+  const outOfStockCount = totalResults - availableCount;
+
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Navbar */}
+
+      {/* ═══════════════════ Navbar ═══════════════════════════════════ */}
       <nav className="sticky top-0 z-50 px-6 py-4 flex items-center justify-between"
            style={{ background: 'var(--nav-bg)', backdropFilter: 'blur(20px)', borderBottom: '1px solid var(--border-subtle)' }}>
         <div className="flex items-center gap-3">
@@ -69,7 +83,8 @@ export default function UserSearch() {
           <span className="font-semibold text-[var(--text-main)] text-sm">Lab Inventory</span>
         </div>
         <div className="flex items-center gap-4">
-          <span className="text-xs px-3 py-1 rounded-full" style={{ background: 'rgba(59, 201, 219, 0.1)', color: 'var(--accent-400)' }}>
+          <span className="text-xs px-3 py-1 rounded-full"
+                style={{ background: 'rgba(59, 201, 219, 0.1)', color: 'var(--accent-400)' }}>
             {userName}
           </span>
           <button
@@ -84,100 +99,244 @@ export default function UserSearch() {
         </div>
       </nav>
 
-      {/* Main */}
-      <main className="flex-1 max-w-3xl w-full mx-auto px-4 py-12">
+      {/* ═══════════════════ Main ═════════════════════════════════════ */}
+      <main className="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 py-10">
         <div className="animate-fade-in-up">
-          <h1 className="text-2xl md:text-3xl font-bold text-[var(--text-main)] mb-2">
-            Find Your Material
-          </h1>
-          <p className="text-sm mb-8" style={{ color: 'var(--text-dim)' }}>
-            Search by name to instantly find the exact location of any chemical in the lab.
-          </p>
 
-          {/* Search bar */}
-          <form onSubmit={handleSearch} className="relative mb-10">
-            <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: 'var(--text-dim)' }} />
+          {/* ── Header ─────────────────────────────────────────────── */}
+          <div className="mb-8">
+            <h1 className="text-2xl md:text-3xl font-bold text-[var(--text-main)] mb-2 tracking-tight">
+              Find Your Material
+            </h1>
+            <p className="text-sm" style={{ color: 'var(--text-dim)' }}>
+              Search by name to instantly locate any chemical in the lab — cabinet &amp; shelf included.
+            </p>
+          </div>
+
+          {/* ── Search Bar ─────────────────────────────────────────── */}
+          <form onSubmit={handleSearch} className="search-bar-wrap relative mb-10">
+            <div className="search-icon-circle">
+              <Search size={18} />
+            </div>
             <input
               id="search-input"
               type="text"
               value={keyword}
               onChange={e => setKeyword(e.target.value)}
               placeholder="Search materials... (e.g. Sodium Chloride, HCl, Ethanol)"
-              className="w-full pl-12 pr-28 py-5 rounded-2xl text-sm text-[var(--text-main)] placeholder:text-gray-600 outline-none transition-all duration-200"
-              style={{
-                background: 'var(--bg-card-solid)',
-                border: '1px solid var(--border-subtle)',
-              }}
+              className="search-input"
             />
             <button
               id="search-submit-btn"
               type="submit"
               disabled={loading || !keyword.trim()}
-              className="absolute right-2 top-1/2 -translate-y-1/2 px-5 py-2 rounded-xl text-sm font-medium text-[var(--text-main)] transition-all duration-200 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-              style={{ background: 'linear-gradient(135deg, var(--accent-500), var(--accent-600))' }}
+              className="search-btn"
             >
-              {loading ? 'Searching...' : 'Search'}
+              {loading ? (
+                <span className="flex items-center gap-2">
+                  <span className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+                  Searching…
+                </span>
+              ) : 'Search'}
             </button>
           </form>
 
-          {/* Results */}
+          {/* ── Results Area ───────────────────────────────────────── */}
           {results === null ? (
-            <div className="text-center py-16">
-              <Search size={40} className="mx-auto mb-4 opacity-10" />
+            /* ▸ Initial / idle state */
+            <div className="text-center py-20 animate-fade-in-up">
+              <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl mb-6"
+                   style={{ background: 'var(--bg-hover)' }}>
+                <Beaker size={36} style={{ color: 'var(--text-dim)', opacity: 0.5 }} />
+              </div>
+              <p className="text-base font-medium text-[var(--text-muted)] mb-1">Ready to search</p>
               <p className="text-sm" style={{ color: 'var(--text-dim)' }}>
-                Start typing to search for materials
+                Type a material name above and press <kbd className="kbd">Enter</kbd> or click <strong>Search</strong>
               </p>
             </div>
+
           ) : results.length === 0 ? (
-            <div className="text-center py-16 animate-fade-in-up">
-              <AlertCircle size={40} className="mx-auto mb-4" style={{ color: 'var(--warning-500)', opacity: 0.5 }} />
+            /* ▸ Empty state */
+            <div className="text-center py-20 animate-fade-in-up">
+              <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl mb-6"
+                   style={{ background: 'rgba(255, 107, 107, 0.08)' }}>
+                <SearchX size={36} style={{ color: 'var(--danger-500)', opacity: 0.7 }} />
+              </div>
               <p className="text-lg font-semibold text-[var(--text-main)] mb-2">No Results Found</p>
-              <p className="text-sm" style={{ color: 'var(--text-dim)' }}>
-                No material matching "<span className="text-[var(--text-main)]">{keyword}</span>" exists in the inventory.
+              <p className="text-sm max-w-md mx-auto" style={{ color: 'var(--text-dim)' }}>
+                No material matching "<span className="text-[var(--text-main)] font-medium">{keyword}</span>" exists in the inventory.
+                <br />Please try another chemical name or formula.
               </p>
             </div>
+
           ) : (
-            <div className="space-y-4">
-              <p className="text-xs font-medium mb-2" style={{ color: 'var(--text-dim)' }}>
-                {results.length} result{results.length !== 1 ? 's' : ''} found
-              </p>
-              {results.map((m, i) => (
-                <div
-                  key={m.id}
-                  className="glass-card p-6 flex items-start gap-4 animate-fade-in-up"
-                  style={{ animationDelay: `${i * 80}ms` }}
-                >
-                  <div className="p-4 rounded-2xl shrink-0"
-                       style={{ background: m.isAvailable ? 'rgba(81, 207, 102, 0.1)' : 'rgba(255, 107, 107, 0.1)' }}>
-                    <Package size={22} style={{ color: m.isAvailable ? 'var(--success-500)' : 'var(--danger-500)' }} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-semibold text-[var(--text-main)] text-sm truncate">{m.materialName}</h3>
-                      {m.isAvailable ? (
-                        <span className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full shrink-0"
-                              style={{ background: 'rgba(81, 207, 102, 0.1)', color: 'var(--success-500)' }}>
-                          <CheckCircle size={10} /> Available
-                        </span>
-                      ) : (
-                        <span className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full shrink-0"
-                              style={{ background: 'rgba(255, 107, 107, 0.1)', color: 'var(--danger-500)' }}>
-                          <XCircle size={10} /> Unavailable
-                        </span>
-                      )}
+            /* ▸ Results */
+            <div className="animate-fade-in-up">
+
+              {/* Stats chips */}
+              <div className="flex flex-wrap items-center gap-3 mb-6">
+                <span className="stat-chip">
+                  <Package size={14} />
+                  {totalResults} result{totalResults !== 1 ? 's' : ''}
+                </span>
+                {availableCount > 0 && (
+                  <span className="stat-chip stat-chip--green">
+                    <CheckCircle size={14} />
+                    {availableCount} Available
+                  </span>
+                )}
+                {outOfStockCount > 0 && (
+                  <span className="stat-chip stat-chip--red">
+                    <XCircle size={14} />
+                    {outOfStockCount} Out of Stock
+                  </span>
+                )}
+              </div>
+
+              {/* ═══ Desktop / Tablet Table ═══════════════════════════ */}
+              <div className="result-table-wrapper hidden md:block">
+                <table className="result-table">
+                  <thead>
+                    <tr>
+                      <th className="text-left pl-6">Material</th>
+                      <th className="text-left">Location</th>
+                      <th className="text-center">Status</th>
+                      <th className="text-center pr-6">Qty</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {results.map((m, i) => {
+                      const loc = parseLocation(m.physicalLocation);
+                      return (
+                        <tr key={m.id} className="result-row" style={{ animationDelay: `${i * 60}ms` }}>
+                          {/* Name */}
+                          <td className="pl-6 py-4">
+                            <div className="flex items-center gap-3">
+                              <div className="material-icon-box"
+                                   style={{
+                                     background: m.isAvailable ? 'rgba(81, 207, 102, 0.08)' : 'rgba(255, 107, 107, 0.08)',
+                                     color: m.isAvailable ? 'var(--success-500)' : 'var(--danger-500)'
+                                   }}>
+                                <FlaskConical size={16} />
+                              </div>
+                              <span className="font-semibold text-sm text-[var(--text-main)]">
+                                {m.materialName}
+                              </span>
+                            </div>
+                          </td>
+
+                          {/* Location */}
+                          <td className="py-4">
+                            <div className="location-tag">
+                              <Archive size={14} className="location-tag-icon" />
+                              <span className="location-tag-label">Cabinet</span>
+                              <span className="location-tag-value">{loc.cabinet}</span>
+                              {loc.shelf && (
+                                <>
+                                  <span className="location-tag-sep">›</span>
+                                  <Layers size={14} className="location-tag-icon" />
+                                  <span className="location-tag-label">Shelf</span>
+                                  <span className="location-tag-value">{loc.shelf}</span>
+                                </>
+                              )}
+                            </div>
+                          </td>
+
+                          {/* Status */}
+                          <td className="py-4 text-center">
+                            {m.isAvailable ? (
+                              <span className="badge badge--green">
+                                <CheckCircle size={12} />
+                                Available
+                              </span>
+                            ) : (
+                              <span className="badge badge--red">
+                                <XCircle size={12} />
+                                Out of Stock
+                              </span>
+                            )}
+                          </td>
+
+                          {/* Quantity */}
+                          <td className="py-4 pr-6 text-center">
+                            <span className="qty-chip">
+                              <Hash size={12} />
+                              {m.quantity}
+                            </span>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* ═══ Mobile Cards ═════════════════════════════════════ */}
+              <div className="md:hidden space-y-4">
+                {results.map((m, i) => {
+                  const loc = parseLocation(m.physicalLocation);
+                  return (
+                    <div
+                      key={m.id}
+                      className="mobile-card animate-fade-in-up"
+                      style={{ animationDelay: `${i * 80}ms` }}
+                    >
+                      {/* Top row: name + badge */}
+                      <div className="flex items-start justify-between gap-3 mb-4">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="material-icon-box"
+                               style={{
+                                 background: m.isAvailable ? 'rgba(81, 207, 102, 0.08)' : 'rgba(255, 107, 107, 0.08)',
+                                 color: m.isAvailable ? 'var(--success-500)' : 'var(--danger-500)'
+                               }}>
+                            <FlaskConical size={16} />
+                          </div>
+                          <h3 className="font-semibold text-sm text-[var(--text-main)] truncate">
+                            {m.materialName}
+                          </h3>
+                        </div>
+                        {m.isAvailable ? (
+                          <span className="badge badge--green shrink-0">
+                            <CheckCircle size={12} /> Available
+                          </span>
+                        ) : (
+                          <span className="badge badge--red shrink-0">
+                            <XCircle size={12} /> Out of Stock
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Location highlight */}
+                      <div className="location-card-highlight">
+                        <div className="flex items-center gap-2">
+                          <MapPin size={16} className="shrink-0" style={{ color: 'var(--primary-400)' }} />
+                          <div className="flex flex-wrap items-center gap-2 text-xs">
+                            <span style={{ color: 'var(--text-dim)' }}>Cabinet</span>
+                            <span className="font-bold text-[var(--text-main)]">{loc.cabinet}</span>
+                            {loc.shelf && (
+                              <>
+                                <span style={{ color: 'var(--border-subtle)' }}>|</span>
+                                <span style={{ color: 'var(--text-dim)' }}>Shelf</span>
+                                <span className="font-bold text-[var(--text-main)]">{loc.shelf}</span>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Quantity */}
+                      <div className="flex items-center gap-2 mt-3 text-xs" style={{ color: 'var(--text-muted)' }}>
+                        <Hash size={13} style={{ color: 'var(--text-dim)' }} />
+                        Quantity: <span className="font-semibold text-[var(--text-main)]">{m.quantity}</span>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2 text-xs" style={{ color: 'var(--text-muted)' }}>
-                      <MapPin size={12} style={{ color: 'var(--primary-400)' }} />
-                      <span>{m.physicalLocation}</span>
-                    </div>
-                    <p className="text-xs mt-1" style={{ color: 'var(--text-dim)' }}>
-                      Quantity: <span className="text-[var(--text-main)] font-medium">{m.quantity}</span>
-                    </p>
-                  </div>
-                </div>
-              ))}
+                  );
+                })}
+              </div>
+
             </div>
           )}
+
         </div>
       </main>
     </div>
