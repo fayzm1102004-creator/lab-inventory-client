@@ -23,8 +23,16 @@ else
                        ?? "Host=localhost;Database=LabInventory;Username=postgres;Password=postgres";
 }
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(connectionString));
+if (connectionString.Contains("Server=", StringComparison.OrdinalIgnoreCase))
+{
+    builder.Services.AddDbContext<AppDbContext>(options =>
+        options.UseSqlServer(connectionString));
+}
+else
+{
+    builder.Services.AddDbContext<AppDbContext>(options =>
+        options.UseNpgsql(connectionString));
+}
 
 // ─── JWT Authentication ──────────────────────────────────────────────
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
