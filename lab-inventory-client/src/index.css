@@ -1,70 +1,68 @@
 @import "tailwindcss";
 
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
+
 /* ─── Design Tokens ──────────────────────────────────────────────────── */
 :root {
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-sans: 'Cairo', system-ui, -apple-system, sans-serif;
 
-  /* Chemistry-inspired palette */
-  --primary-50:  #eef2ff;
-  --primary-100: #dbe4ff;
-  --primary-200: #bac8ff;
-  --primary-300: #91a7ff;
-  --primary-400: #748ffc;
-  --primary-500: #5c7cfa;
-  --primary-600: #4c6ef5;
-  --primary-700: #4263eb;
-  --primary-800: #3b5bdb;
-  --primary-900: #364fc7;
+  /* Chemistry Lab & Arabic School Palette (Teal & Amber) */
+  --primary-50:  #f0fdfa;
+  --primary-100: #ccfbf1;
+  --primary-200: #99f6e4;
+  --primary-300: #5eead4;
+  --primary-400: #2dd4bf;
+  --primary-500: #0d9488;
+  --primary-600: #0f766e;
+  --primary-700: #115e59;
+  --primary-800: #134e4a;
+  --primary-900: #042f2e;
 
-  --accent-400: #3bc9db;
-  --accent-500: #22b8cf;
-  --accent-600: #15aabf;
+  --accent-400: #fbbf24;
+  --accent-500: #f59e0b;
+  --accent-600: #d97706;
 
-  --success-500: #51cf66;
-  --warning-500: #fcc419;
-  --danger-500: #ff6b6b;
+  --success-500: #10b981;
+  --warning-500: #f59e0b;
+  --danger-500: #ef4444;
 
-  --gray-50:  #f8f9fa;
-  --gray-100: #f1f3f5;
-  --gray-200: #e9ecef;
-  --gray-300: #dee2e6;
-  --gray-400: #ced4da;
-  --gray-500: #adb5bd;
-  --gray-600: #868e96;
-  --gray-700: #495057;
-  --gray-800: #343a40;
-  --gray-900: #212529;
+  --gray-50:  #f8fafc;
+  --gray-100: #f1f5f9;
+  --gray-200: #e2e8f0;
+  --gray-300: #cbd5e1;
+  --gray-400: #94a3b8;
+  --gray-500: #64748b;
+  --gray-600: #475569;
+  --gray-700: #334155;
+  --gray-800: #1e293b;
+  --gray-900: #0f172a;
 
-  --surface-dark:  #0f0f1a;
-  --surface-card:  #1a1a2e;
-  --surface-hover: #252540;
-  --border-subtle: rgba(255, 255, 255, 0.06);
-
-  /* Theme Dynamic Variables (Default Dark) */
-  --bg-main: #0f0f1a;
-  --bg-card: rgba(26, 26, 46, 0.7);
-  --bg-card-solid: #1a1a2e;
-  --bg-hover: #252540;
-  --text-main: #ffffff;
-  --text-muted: #adb5bd;
-  --text-dim: #868e96;
-  --table-bg: rgba(26,26,46,0.6);
-  --table-header: rgba(15,15,26,0.9);
-  --nav-bg: rgba(15, 15, 26, 0.85);
+  /* Theme Dynamic Variables (Default Light) */
+  --bg-main: #f4f7f6;
+  --bg-card: rgba(255, 255, 255, 0.9);
+  --bg-card-solid: #ffffff;
+  --bg-hover: #eef2f6;
+  --text-main: #1e293b;
+  --text-muted: #475569;
+  --text-dim: #64748b;
+  --border-subtle: rgba(15, 23, 42, 0.1);
+  --table-bg: #ffffff;
+  --table-header: #f1f5f9;
+  --nav-bg: rgba(255, 255, 255, 0.95);
 }
 
-:root[data-theme='light'] {
-  --bg-main: #f8f9fa;
-  --bg-card: rgba(255, 255, 255, 0.85);
-  --bg-card-solid: #ffffff;
-  --bg-hover: #f1f3f5;
-  --text-main: #212529;
-  --text-muted: #495057;
-  --text-dim: #868e96;
-  --border-subtle: rgba(0, 0, 0, 0.1);
-  --table-bg: #ffffff;
-  --table-header: #f8f9fa;
-  --nav-bg: rgba(255, 255, 255, 0.9);
+:root[data-theme='dark'] {
+  --bg-main: #0f172a;
+  --bg-card: rgba(30, 41, 59, 0.85);
+  --bg-card-solid: #1e293b;
+  --bg-hover: #334155;
+  --text-main: #f8fafc;
+  --text-muted: #cbd5e1;
+  --text-dim: #94a3b8;
+  --border-subtle: rgba(255, 255, 255, 0.1);
+  --table-bg: #1e293b;
+  --table-header: #0f172a;
+  --nav-bg: rgba(15, 23, 42, 0.95);
 }
 
 /* ─── Global Reset ──────────────────────────────────────────────────── */
@@ -352,14 +350,14 @@ body {
   color: var(--danger-500);
 }
 
-/* light-theme overrides for badges */
-:root[data-theme='light'] .badge--green {
-  background: #dcfce7;
-  color: #166534;
+/* dark-theme overrides for badges */
+:root[data-theme='dark'] .badge--green {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d058;
 }
-:root[data-theme='light'] .badge--red {
-  background: #fee2e2;
-  color: #991b1b;
+:root[data-theme='dark'] .badge--red {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
 }
 
 /* ─── Quantity Chip ──────────────────────────────────────────────────── */
