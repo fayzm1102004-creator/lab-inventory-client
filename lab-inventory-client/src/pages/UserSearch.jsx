@@ -112,7 +112,7 @@ export default function UserSearch() {
                 value={keyword}
                 onChange={e => setKeyword(e.target.value)}
                 placeholder="أدخل اسم المادة..."
-                className="w-full bg-slate-900/80 border-2 border-slate-700 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 rounded-2xl py-4 pr-12 pl-24 sm:pl-32 text-base sm:text-lg text-slate-100 placeholder-slate-500 shadow-xl transition-all duration-300 outline-none"
+                className="w-full bg-slate-900/80 border-2 border-slate-700 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 rounded-2xl py-4 pr-16 sm:pr-20 pl-28 sm:pl-36 text-base sm:text-lg text-slate-100 placeholder-slate-500 shadow-xl transition-all duration-300 outline-none"
               />
               <button
                 type="submit"
