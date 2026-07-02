@@ -232,16 +232,16 @@ export default function AdminDashboard() {
           <div className="animate-fade-in-up flex flex-col flex-1">
 
             {/* ── Header + Add Button ────────────────────────────────── */}
-            <div className="flex flex-col items-center justify-center gap-6 mt-6 mb-14 text-center w-full">
+            <div className="flex flex-col items-center justify-center gap-6 mt-6 mb-20 text-center w-full">
               <div>
                 <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">إدارة المواد الكيميائية</h2>
                 <p className="text-base text-slate-500 mt-2">إضافة وتعديل وحذف المواد المسجلة في مختبر الكيمياء</p>
               </div>
               <button
                 onClick={() => openModal()}
-                className="flex items-center gap-2 bg-cyan-600 hover:bg-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.4)] px-6 py-3 rounded-xl text-white text-sm font-bold transition-all duration-300 cursor-pointer hover:-translate-y-0.5 active:translate-y-0 shrink-0"
+                className="flex items-center gap-2 bg-cyan-600 hover:bg-cyan-500 shadow-[0_0_20px_rgba(6,182,212,0.5)] px-10 py-4 rounded-2xl text-white text-base font-bold transition-all duration-300 cursor-pointer hover:-translate-y-1 active:translate-y-0 shrink-0"
               >
-                <Plus size={20} />
+                <Plus size={22} />
                 إضافة مادة جديدة
               </button>
             </div>
