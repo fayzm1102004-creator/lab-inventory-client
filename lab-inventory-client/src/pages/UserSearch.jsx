@@ -93,7 +93,7 @@ export default function UserSearch() {
       </nav>
 
       {/* ═══════════════════ Main ═════════════════════════════════════ */}
-      <main className="flex-grow w-full max-w-5xl mx-auto px-4 md:px-8 pt-12 md:pt-20 flex flex-col items-center">
+      <main className="flex-grow w-full px-4 md:px-8 xl:px-12 mx-auto pt-12 md:pt-20 flex flex-col items-center">
         <div className="w-full animate-fade-in-up">
 
           {/* ── Search Bar Wrapper ─────────────────────────────────────────── */}
@@ -102,7 +102,7 @@ export default function UserSearch() {
             <p className="text-slate-400 text-sm sm:text-base text-center w-full">ابحث عن أي مادة لتحديد مكانها بدقة داخل المعمل</p>
           </div>
 
-          <div className="w-full max-w-3xl mx-auto mt-8 relative">
+          <div className="w-full mx-auto mt-8 relative">
             <form onSubmit={handleSearch} className="relative mb-10 w-full">
               <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
                 <Search size={24} className="text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
@@ -143,7 +143,7 @@ export default function UserSearch() {
 
           ) : results.length === 0 ? (
             /* ▸ Empty state */
-            <div className="bg-rose-950/30 border border-rose-900 text-rose-300 p-6 rounded-xl text-center mt-8 max-w-2xl mx-auto animate-fade-in-up">
+            <div className="bg-rose-950/30 border border-rose-900 text-rose-300 p-6 rounded-xl text-center mt-8 w-full mx-auto animate-fade-in-up">
               <SearchX size={40} className="mx-auto mb-4 opacity-80" />
               <p className="text-lg font-semibold mb-2">لم يتم العثور على نتائج</p>
               <p className="text-sm opacity-80">
