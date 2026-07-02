@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ShieldCheck, LogOut, Plus, Edit2, Trash2, Package, Search, Clock, List, FileText, MapPin } from 'lucide-react';
+import { ShieldCheck, LogOut, Plus, Edit2, Trash2, Package, Search, Clock, List, FileText, MapPin, FlaskConical, Activity, X, Beaker } from 'lucide-react';
 import { getMaterials, createMaterial, updateMaterial, deleteMaterial, getAuditLogs } from '../api';
 
 export default function AdminDashboard() {
@@ -136,119 +136,212 @@ export default function AdminDashboard() {
     return new Date(dateString).toLocaleString();
   };
 
+  /* ── Stat helpers ────────────────────────────────────────────────── */
+  const totalMaterials = materials.length;
+  const availableCount = materials.filter(m => m.isAvailable).length;
+  const outOfStockCount = totalMaterials - availableCount;
+
   return (
-    <div className="min-h-screen flex flex-col">
-      {/* Navbar */}
-      <nav className="sticky top-0 z-50 px-6 py-4 flex items-center justify-between"
-           style={{ background: 'var(--nav-bg)', backdropFilter: 'blur(20px)', borderBottom: '1px solid var(--border-subtle)' }}>
-        <div className="flex items-center gap-3">
-          <ShieldCheck size={20} style={{ color: 'var(--primary-400)' }} />
-          <span className="font-semibold text-[var(--text-main)] text-sm">Admin Dashboard</span>
-        </div>
-        <div className="flex items-center gap-4">
-          <span className="text-xs px-3 py-1 rounded-full" style={{ background: 'rgba(92, 124, 250, 0.1)', color: 'var(--primary-400)' }}>
-            {adminUsername}
-          </span>
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-2 text-xs px-3 py-2 rounded-lg transition-all cursor-pointer hover:bg-red-500/10"
-            style={{ color: 'var(--danger-500)' }}
-          >
-            <LogOut size={14} />
-            Logout
-          </button>
+    <div className="bg-[#0B1121] text-slate-100 min-h-screen flex flex-col">
+
+      {/* ═══════════════════ TOP NAVBAR (Frosted Glass) ══════════════════ */}
+      <nav className="sticky top-0 z-50 bg-white/5 backdrop-blur-md border-b border-white/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-cyan-500/10 border border-cyan-500/20">
+              <FlaskConical size={20} className="text-cyan-400" />
+            </div>
+            <div className="hidden sm:block">
+              <h1 className="text-base font-bold text-white tracking-wide">Lab Inventory</h1>
+              <p className="text-[11px] text-slate-500">Admin Control Panel</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <div className="hidden sm:flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/20 px-3 py-1.5 rounded-full">
+              <ShieldCheck size={14} className="text-cyan-400" />
+              <span className="text-xs font-medium text-cyan-300">{adminUsername}</span>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 text-xs px-3 py-2 rounded-lg text-rose-400 hover:bg-rose-500/10 border border-transparent hover:border-rose-500/20 transition-all duration-300 cursor-pointer"
+            >
+              <LogOut size={14} />
+              <span className="hidden sm:inline">تسجيل خروج</span>
+            </button>
+          </div>
         </div>
       </nav>
 
-      <main className="flex-1 max-w-5xl w-full mx-auto px-4 py-8">
-        {/* Tabs */}
-        <div className="flex items-center gap-4 mb-8 border-b border-[var(--border-subtle)] pb-px">
+      {/* ═══════════════════ MAIN CONTENT ════════════════════════════════ */}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+
+        {/* ── Tab Navigation ───────────────────────────────────────── */}
+        <div className="flex items-center gap-2 mb-8 bg-slate-900/60 backdrop-blur-sm p-1.5 rounded-xl border border-slate-800 w-fit">
           <button
             onClick={() => setActiveTab('inventory')}
-            className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
-              activeTab === 'inventory' 
-                ? 'text-[var(--text-main)] border-[var(--primary-500)]' 
-                : 'text-[var(--text-dim)] border-transparent hover:text-[var(--text-main)]'
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 cursor-pointer ${
+              activeTab === 'inventory'
+                ? 'bg-cyan-600 text-white shadow-[0_0_15px_rgba(6,182,212,0.3)]'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
             }`}
           >
-            <Package size={16} /> Inventory
+            <Package size={16} />
+            <span className="hidden sm:inline">المواد الكيميائية</span>
+            <span className="sm:hidden">المواد</span>
           </button>
           <button
             onClick={() => setActiveTab('audit')}
-            className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
-              activeTab === 'audit' 
-                ? 'text-[var(--text-main)] border-[var(--primary-500)]' 
-                : 'text-[var(--text-dim)] border-transparent hover:text-[var(--text-main)]'
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 cursor-pointer ${
+              activeTab === 'audit'
+                ? 'bg-cyan-600 text-white shadow-[0_0_15px_rgba(6,182,212,0.3)]'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
             }`}
           >
-            <FileText size={16} /> Audit Logs
+            <Activity size={16} />
+            <span className="hidden sm:inline">سجل النشاطات</span>
+            <span className="sm:hidden">السجل</span>
           </button>
         </div>
 
-        {/* Content */}
-        {loading ? (
-          <div className="flex justify-center py-20">
-            <div className="w-8 h-8 rounded-full border-2 border-[var(--primary-500)] border-t-transparent animate-spin" />
+        {/* ── Error Banner ─────────────────────────────────────────── */}
+        {error && (
+          <div className="mb-6 p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3" dir="rtl">
+            <span className="text-rose-300 font-medium text-sm">{error}</span>
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2 bg-rose-600 text-white rounded-lg text-xs font-bold hover:bg-rose-500 transition shrink-0"
+            >
+              تسجيل الخروج والعودة
+            </button>
           </div>
+        )}
+
+        {/* ── Loading Spinner ──────────────────────────────────────── */}
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-32 gap-4">
+            <div className="relative">
+              <div className="w-12 h-12 rounded-full border-2 border-cyan-500/30 border-t-cyan-400 animate-spin" />
+              <div className="absolute inset-0 w-12 h-12 rounded-full border-2 border-transparent border-b-cyan-600/50 animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }} />
+            </div>
+            <p className="text-sm text-slate-500 animate-pulse">جارٍ تحميل البيانات...</p>
+          </div>
+
         ) : activeTab === 'inventory' ? (
-          <div className="animate-fade-in-up">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-lg font-semibold text-[var(--text-main)]">Manage Materials</h2>
+          /* ═══════════════════ INVENTORY TAB ══════════════════════════ */
+          <div className="animate-fade-in-up space-y-6">
+
+            {/* ── Header + Add Button ────────────────────────────────── */}
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div>
+                <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">إدارة المواد الكيميائية</h2>
+                <p className="text-sm text-slate-500 mt-1">إضافة وتعديل وحذف المواد المسجلة في مختبر الكيمياء</p>
+              </div>
               <button
                 onClick={() => openModal()}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-[var(--text-main)] transition-all cursor-pointer hover:shadow-lg"
-                style={{ background: 'linear-gradient(135deg, var(--primary-600), var(--primary-800))' }}
+                className="flex items-center gap-2 bg-cyan-600 hover:bg-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.4)] px-5 py-2.5 rounded-lg text-white text-sm font-medium transition-all duration-300 cursor-pointer hover:-translate-y-0.5 active:translate-y-0 shrink-0"
               >
-                <Plus size={16} /> Add Material
+                <Plus size={18} />
+                إضافة مادة
               </button>
             </div>
 
-            {/* Desktop Table */}
-            <div className="hidden md:block bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-              <table className="w-full text-center text-sm whitespace-nowrap" dir="rtl">
-                <thead className="bg-slate-50 border-b border-slate-200">
+            {/* ── Stat Cards ─────────────────────────────────────────── */}
+            <div className="grid grid-cols-3 gap-3 sm:gap-4">
+              <div className="bg-slate-900/50 backdrop-blur-sm border border-slate-800 rounded-xl p-4 text-center">
+                <p className="text-2xl sm:text-3xl font-bold text-white font-mono">{totalMaterials}</p>
+                <p className="text-xs text-slate-500 mt-1">إجمالي المواد</p>
+              </div>
+              <div className="bg-emerald-500/5 backdrop-blur-sm border border-emerald-500/20 rounded-xl p-4 text-center">
+                <p className="text-2xl sm:text-3xl font-bold text-emerald-400 font-mono">{availableCount}</p>
+                <p className="text-xs text-emerald-500/70 mt-1">متوفر</p>
+              </div>
+              <div className="bg-rose-500/5 backdrop-blur-sm border border-rose-500/20 rounded-xl p-4 text-center">
+                <p className="text-2xl sm:text-3xl font-bold text-rose-400 font-mono">{outOfStockCount}</p>
+                <p className="text-xs text-rose-500/70 mt-1">غير متوفر</p>
+              </div>
+            </div>
+
+            {/* ═══ Desktop Table ═══════════════════════════════════════ */}
+            <div className="hidden md:block bg-slate-900/50 backdrop-blur-md rounded-xl border border-slate-800 shadow-xl overflow-hidden">
+              <table className="w-full text-sm" dir="rtl">
+                <thead className="bg-slate-800/80">
                   <tr>
-                    <th className="px-6 py-4 font-bold text-slate-600 text-right">اسم المادة</th>
-                    <th className="px-6 py-4 font-bold text-slate-600 text-right">المكان</th>
-                    <th className="px-6 py-4 font-bold text-slate-600 text-center">الحالة</th>
-                    <th className="px-6 py-4 font-bold text-slate-600 text-center">الكمية</th>
-                    <th className="px-6 py-4 font-bold text-slate-600 text-center">إجراءات</th>
+                    <th className="px-6 py-4 text-cyan-400 font-semibold text-right text-xs uppercase tracking-wider">اسم المادة</th>
+                    <th className="px-6 py-4 text-cyan-400 font-semibold text-right text-xs uppercase tracking-wider">المكان</th>
+                    <th className="px-6 py-4 text-cyan-400 font-semibold text-center text-xs uppercase tracking-wider">الحالة</th>
+                    <th className="px-6 py-4 text-cyan-400 font-semibold text-center text-xs uppercase tracking-wider">الكمية</th>
+                    <th className="px-6 py-4 text-cyan-400 font-semibold text-center text-xs uppercase tracking-wider">إجراءات</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody>
                   {materials.length === 0 ? (
                     <tr>
-                      <td colSpan="5" className="px-6 py-8 text-center text-slate-400">
-                        لا توجد مواد مسجلة حالياً.
+                      <td colSpan="5" className="px-6 py-16 text-center">
+                        <Beaker size={40} className="mx-auto text-slate-700 mb-3" />
+                        <p className="text-slate-500">لا توجد مواد مسجلة حالياً.</p>
                       </td>
                     </tr>
-                  ) : materials.map(m => (
-                    <tr key={m.id} className="hover:bg-slate-50 transition-colors">
-                      <td className="px-6 py-4 text-slate-800 font-bold text-right">{m.materialName}</td>
-                      <td className="px-6 py-4 text-slate-500 text-right">{m.physicalLocation}</td>
-                      <td className="px-6 py-4 text-center">
-                        <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${
-                          m.isAvailable 
-                            ? 'bg-green-100 text-green-700' 
-                            : 'bg-red-100 text-red-700'
-                        }`}>
-                          {m.isAvailable ? 'متوفر' : 'غير متوفر'}
+                  ) : materials.map((m, i) => (
+                    <tr
+                      key={m.id}
+                      className="hover:bg-cyan-950/20 transition-colors duration-200 border-b border-slate-800/60"
+                      style={{ animationDelay: `${i * 40}ms` }}
+                    >
+                      {/* اسم المادة */}
+                      <td className="px-6 py-4 text-right">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-2 h-2 rounded-full shrink-0 ${m.isAvailable ? 'bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.5)]' : 'bg-rose-400 shadow-[0_0_6px_rgba(251,113,133,0.5)]'}`} />
+                          <span className="font-medium text-slate-200">{m.materialName}</span>
+                        </div>
+                      </td>
+
+                      {/* المكان */}
+                      <td className="px-6 py-4 text-right">
+                        <span className="inline-flex items-center gap-1.5 bg-slate-800/80 border border-slate-700/50 px-3 py-1.5 rounded-lg text-xs">
+                          <MapPin size={12} className="text-cyan-400 shrink-0" />
+                          <span className="text-slate-300">{m.physicalLocation || '—'}</span>
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-slate-600 font-bold text-center">{m.quantity}</td>
-                      <td className="px-6 py-4 flex justify-center gap-2">
-                        <button
-                          onClick={() => openModal(m)}
-                          className="p-2 rounded-lg text-blue-500 hover:bg-blue-50 transition-colors"
-                        >
-                          <Edit2 size={18} />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(m.id)}
-                          className="p-2 rounded-lg text-red-500 hover:bg-red-50 transition-colors"
-                        >
-                          <Trash2 size={18} />
-                        </button>
+
+                      {/* الحالة */}
+                      <td className="px-6 py-4 text-center">
+                        {m.isAvailable ? (
+                          <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-3 py-1 rounded-full text-xs font-medium inline-block">
+                            متوفر
+                          </span>
+                        ) : (
+                          <span className="bg-rose-500/10 text-rose-400 border border-rose-500/20 px-3 py-1 rounded-full text-xs font-medium inline-block">
+                            غير متوفر
+                          </span>
+                        )}
+                      </td>
+
+                      {/* الكمية */}
+                      <td className="px-6 py-4 text-center">
+                        <span className="font-mono text-slate-300 bg-slate-800/60 px-3 py-1 rounded-md border border-slate-700/40 text-sm">
+                          {m.quantity}
+                        </span>
+                      </td>
+
+                      {/* إجراءات */}
+                      <td className="px-6 py-4">
+                        <div className="flex justify-center gap-1">
+                          <button
+                            onClick={() => openModal(m)}
+                            className="p-2 rounded-lg text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 transition-all duration-200 cursor-pointer"
+                            title="تعديل"
+                          >
+                            <Edit2 size={16} />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(m.id)}
+                            className="p-2 rounded-lg text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-all duration-200 cursor-pointer"
+                            title="حذف"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -256,67 +349,108 @@ export default function AdminDashboard() {
               </table>
             </div>
 
-            {/* Mobile Cards */}
-            <div className="md:hidden space-y-4" dir="rtl">
+            {/* ═══ Mobile Cards ════════════════════════════════════════ */}
+            <div className="md:hidden space-y-3" dir="rtl">
               {materials.length === 0 ? (
-                <div className="p-8 text-center text-slate-400 bg-white rounded-2xl border border-slate-200">
-                  لا توجد مواد مسجلة حالياً.
+                <div className="p-12 text-center bg-slate-900/50 border border-slate-800 rounded-xl">
+                  <Beaker size={40} className="mx-auto text-slate-700 mb-3" />
+                  <p className="text-slate-500">لا توجد مواد مسجلة حالياً.</p>
                 </div>
-              ) : materials.map(m => (
-                <div key={m.id} className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm relative">
-                  <div className="flex justify-between items-start mb-3">
-                    <h4 className="font-bold text-lg text-slate-800">{m.materialName}</h4>
-                    <div className="flex gap-1">
-                      <button onClick={() => openModal(m)} className="p-2 text-blue-500 bg-blue-50 rounded-lg"><Edit2 size={16} /></button>
-                      <button onClick={() => handleDelete(m.id)} className="p-2 text-red-500 bg-red-50 rounded-lg"><Trash2 size={16} /></button>
+              ) : materials.map((m, i) => (
+                <div
+                  key={m.id}
+                  className="bg-slate-900/50 backdrop-blur-sm rounded-xl border border-slate-800 p-4 hover:border-cyan-800/40 transition-all duration-300 animate-fade-in-up"
+                  style={{ animationDelay: `${i * 60}ms` }}
+                >
+                  {/* Row 1: Name + Actions */}
+                  <div className="flex justify-between items-start gap-3 mb-3">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className={`w-2.5 h-2.5 rounded-full shrink-0 ${m.isAvailable ? 'bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.5)]' : 'bg-rose-400 shadow-[0_0_6px_rgba(251,113,133,0.5)]'}`} />
+                      <h4 className="font-bold text-white truncate">{m.materialName}</h4>
+                    </div>
+                    <div className="flex gap-1 shrink-0">
+                      <button onClick={() => openModal(m)} className="p-1.5 rounded-lg text-blue-400 hover:bg-blue-500/10 transition-colors"><Edit2 size={15} /></button>
+                      <button onClick={() => handleDelete(m.id)} className="p-1.5 rounded-lg text-rose-400 hover:bg-rose-500/10 transition-colors"><Trash2 size={15} /></button>
                     </div>
                   </div>
-                  <div className="text-sm text-slate-500 mb-4 bg-slate-50 p-3 rounded-xl border border-slate-100">
-                    <MapPin size={14} className="inline ml-1 text-slate-400" /> {m.physicalLocation}
+
+                  {/* Row 2: Location */}
+                  <div className="flex items-center gap-1.5 bg-slate-800/60 border border-slate-700/40 px-3 py-2 rounded-lg mb-3 text-xs">
+                    <MapPin size={13} className="text-cyan-400 shrink-0" />
+                    <span className="text-slate-400">{m.physicalLocation || '—'}</span>
                   </div>
+
+                  {/* Row 3: Status + Qty */}
                   <div className="flex justify-between items-center">
-                    <span className={`px-3 py-1 rounded-full text-xs font-bold ${m.isAvailable ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                      {m.isAvailable ? 'متوفر' : 'غير متوفر'}
+                    {m.isAvailable ? (
+                      <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-3 py-1 rounded-full text-xs font-medium">متوفر</span>
+                    ) : (
+                      <span className="bg-rose-500/10 text-rose-400 border border-rose-500/20 px-3 py-1 rounded-full text-xs font-medium">غير متوفر</span>
+                    )}
+                    <span className="font-mono text-sm text-slate-300 bg-slate-800/60 border border-slate-700/40 px-3 py-1 rounded-md">
+                      الكمية: {m.quantity}
                     </span>
-                    <span className="text-sm font-bold text-slate-600 bg-slate-100 px-3 py-1 rounded-lg">الكمية: {m.quantity}</span>
                   </div>
                 </div>
               ))}
             </div>
           </div>
+
         ) : (
-          <div className="animate-fade-in-up">
-             <h2 className="text-lg font-semibold text-[var(--text-main)] mb-6">User Activity Logs</h2>
-             
-             {/* Desktop Table */}
-             <div className="hidden md:block bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-              <table className="w-full text-center text-sm whitespace-nowrap" dir="rtl">
-                <thead className="bg-slate-50 border-b border-slate-200">
+          /* ═══════════════════ AUDIT LOGS TAB ═════════════════════════ */
+          <div className="animate-fade-in-up space-y-6">
+            <div>
+              <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">سجل النشاطات</h2>
+              <p className="text-sm text-slate-500 mt-1">متابعة جميع عمليات تسجيل الدخول والبحث للمستخدمين</p>
+            </div>
+
+            {/* ═══ Desktop Table ═══════════════════════════════════════ */}
+            <div className="hidden md:block bg-slate-900/50 backdrop-blur-md rounded-xl border border-slate-800 shadow-xl overflow-hidden">
+              <table className="w-full text-sm" dir="rtl">
+                <thead className="bg-slate-800/80">
                   <tr>
-                    <th className="px-6 py-4 font-bold text-slate-600 text-right">اسم المستخدم</th>
-                    <th className="px-6 py-4 font-bold text-slate-600 text-center">وقت الدخول</th>
-                    <th className="px-6 py-4 font-bold text-slate-600 text-center">عمليات البحث</th>
-                    <th className="px-6 py-4 font-bold text-slate-600 text-center">وقت الخروج</th>
+                    <th className="px-6 py-4 text-cyan-400 font-semibold text-right text-xs uppercase tracking-wider">اسم المستخدم</th>
+                    <th className="px-6 py-4 text-cyan-400 font-semibold text-center text-xs uppercase tracking-wider">وقت الدخول</th>
+                    <th className="px-6 py-4 text-cyan-400 font-semibold text-center text-xs uppercase tracking-wider">عمليات البحث</th>
+                    <th className="px-6 py-4 text-cyan-400 font-semibold text-center text-xs uppercase tracking-wider">وقت الخروج</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody>
                   {auditLogs.length === 0 ? (
                     <tr>
-                      <td colSpan="4" className="px-6 py-8 text-center text-slate-400">
-                        لا يوجد سجل نشاطات حتى الآن.
+                      <td colSpan="4" className="px-6 py-16 text-center">
+                        <Activity size={40} className="mx-auto text-slate-700 mb-3" />
+                        <p className="text-slate-500">لا يوجد سجل نشاطات حتى الآن.</p>
                       </td>
                     </tr>
-                  ) : auditLogs.map(log => (
-                    <tr key={log.logId} className="hover:bg-slate-50 transition-colors">
-                      <td className="px-6 py-4 text-slate-800 font-bold text-right">{log.userName}</td>
-                      <td className="px-6 py-4 text-slate-500 text-center" dir="ltr">{formatDate(log.loginTime)}</td>
-                      <td className="px-6 py-4 text-slate-500 italic text-center">
-                        {log.searchKeywords || '—'}
+                  ) : auditLogs.map((log, i) => (
+                    <tr
+                      key={log.logId}
+                      className="hover:bg-cyan-950/20 transition-colors duration-200 border-b border-slate-800/60"
+                      style={{ animationDelay: `${i * 40}ms` }}
+                    >
+                      <td className="px-6 py-4 text-right">
+                        <span className="font-medium text-slate-200">{log.userName}</span>
                       </td>
-                      <td className="px-6 py-4 text-slate-500 text-center flex justify-center" dir="ltr">
-                        {log.logoutTime ? formatDate(log.logoutTime) : (
-                          <span className="text-green-500 font-bold flex items-center justify-center gap-2 bg-green-50 px-3 py-1 rounded-full">
-                            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" /> متصل الآن
+                      <td className="px-6 py-4 text-center" dir="ltr">
+                        <span className="font-mono text-xs text-slate-400">{formatDate(log.loginTime)}</span>
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        {log.searchKeywords ? (
+                          <span className="text-xs text-slate-400 italic bg-slate-800/50 px-3 py-1 rounded-lg border border-slate-700/30 inline-block max-w-[200px] truncate">
+                            {log.searchKeywords}
+                          </span>
+                        ) : (
+                          <span className="text-slate-600">—</span>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 text-center" dir="ltr">
+                        {log.logoutTime ? (
+                          <span className="font-mono text-xs text-slate-400">{formatDate(log.logoutTime)}</span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-3 py-1 rounded-full text-xs font-medium">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_6px_rgba(52,211,153,0.6)]" />
+                            متصل الآن
                           </span>
                         )}
                       </td>
@@ -326,40 +460,48 @@ export default function AdminDashboard() {
               </table>
             </div>
 
-            {/* Mobile Cards */}
-            <div className="md:hidden space-y-4" dir="rtl">
+            {/* ═══ Mobile Cards ════════════════════════════════════════ */}
+            <div className="md:hidden space-y-3" dir="rtl">
               {auditLogs.length === 0 ? (
-                <div className="p-8 text-center text-slate-400 bg-white rounded-2xl border border-slate-200">
-                  لا يوجد سجل نشاطات حتى الآن.
+                <div className="p-12 text-center bg-slate-900/50 border border-slate-800 rounded-xl">
+                  <Activity size={40} className="mx-auto text-slate-700 mb-3" />
+                  <p className="text-slate-500">لا يوجد سجل نشاطات حتى الآن.</p>
                 </div>
-              ) : auditLogs.map(log => (
-                <div key={log.logId} className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm relative">
-                  <div className="flex justify-between items-start mb-3">
-                    <h4 className="font-bold text-lg text-slate-800">{log.userName}</h4>
+              ) : auditLogs.map((log, i) => (
+                <div
+                  key={log.logId}
+                  className="bg-slate-900/50 backdrop-blur-sm rounded-xl border border-slate-800 p-4 hover:border-cyan-800/40 transition-all duration-300 animate-fade-in-up"
+                  style={{ animationDelay: `${i * 60}ms` }}
+                >
+                  {/* Header */}
+                  <div className="flex justify-between items-center mb-3">
+                    <h4 className="font-bold text-white">{log.userName}</h4>
                     {!log.logoutTime && (
-                      <span className="text-green-500 text-xs font-bold flex items-center gap-1 bg-green-50 px-2 py-1 rounded-full">
-                        <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" /> متصل
+                      <span className="inline-flex items-center gap-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full text-[10px] font-medium">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> متصل
                       </span>
                     )}
                   </div>
-                  
-                  <div className="space-y-2 mb-3">
-                    <div className="text-xs flex justify-between bg-slate-50 p-2 rounded-lg">
+
+                  {/* Times */}
+                  <div className="space-y-1.5 mb-3">
+                    <div className="flex justify-between text-xs bg-slate-800/50 border border-slate-700/30 p-2.5 rounded-lg">
                       <span className="text-slate-500">الدخول:</span>
-                      <span className="font-bold text-slate-700" dir="ltr">{formatDate(log.loginTime)}</span>
+                      <span className="font-mono text-slate-400" dir="ltr">{formatDate(log.loginTime)}</span>
                     </div>
                     {log.logoutTime && (
-                      <div className="text-xs flex justify-between bg-slate-50 p-2 rounded-lg">
+                      <div className="flex justify-between text-xs bg-slate-800/50 border border-slate-700/30 p-2.5 rounded-lg">
                         <span className="text-slate-500">الخروج:</span>
-                        <span className="font-bold text-slate-700" dir="ltr">{formatDate(log.logoutTime)}</span>
+                        <span className="font-mono text-slate-400" dir="ltr">{formatDate(log.logoutTime)}</span>
                       </div>
                     )}
                   </div>
 
+                  {/* Search keywords */}
                   {log.searchKeywords && (
-                    <div className="text-sm">
-                      <span className="text-slate-400 block mb-1 text-xs">كلمات البحث:</span>
-                      <p className="text-slate-700 bg-blue-50/50 p-2 rounded-lg italic text-xs leading-relaxed">
+                    <div>
+                      <span className="text-slate-600 block mb-1 text-[10px] uppercase tracking-wider">كلمات البحث:</span>
+                      <p className="text-slate-400 bg-cyan-500/5 border border-cyan-500/10 p-2.5 rounded-lg italic text-xs leading-relaxed">
                         {log.searchKeywords}
                       </p>
                     </div>
@@ -371,108 +513,109 @@ export default function AdminDashboard() {
         )}
       </main>
 
-      {/* Modal */}
+      {/* ═══════════════════ MODAL ════════════════════════════════════ */}
       {showModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-slate-900/40 backdrop-blur-md transition-all">
-          <div className="glass-card w-full max-w-lg p-8 sm:p-10 animate-fade-in-up relative overflow-hidden shadow-2xl">
-            {/* Decorative background element for chemistry vibe */}
-            <div className="absolute -top-24 -right-24 w-48 h-48 bg-[var(--primary-300)] rounded-full mix-blend-multiply filter blur-3xl opacity-30"></div>
-            <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-[var(--accent-400)] rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
-            
-            <div className="relative z-10">
-              <div className="flex justify-between items-center mb-8">
-                <h3 className="text-2xl font-bold text-[var(--text-main)] flex items-center gap-3">
-                  {editingId ? (
-                    <><Edit2 className="text-[var(--primary-500)]" size={24} /> تعديل المادة</>
-                  ) : (
-                    <><Package className="text-[var(--primary-500)]" size={24} /> إضافة مادة جديدة</>
-                  )}
-                </h3>
-                <button 
-                  onClick={() => setShowModal(false)}
-                  className="p-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-                </button>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/70 backdrop-blur-md transition-all">
+          <div className="w-full max-w-lg bg-[#0f1a2e] border border-slate-700/50 rounded-2xl shadow-2xl shadow-cyan-500/5 relative overflow-hidden animate-fade-in-up">
+
+            {/* Decorative glows */}
+            <div className="absolute -top-20 -right-20 w-40 h-40 bg-cyan-500 rounded-full mix-blend-screen filter blur-[80px] opacity-10 pointer-events-none" />
+            <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-purple-500 rounded-full mix-blend-screen filter blur-[80px] opacity-[0.07] pointer-events-none" />
+
+            {/* Header */}
+            <div className="relative z-10 flex justify-between items-center px-6 sm:px-8 pt-6 sm:pt-8 pb-4 border-b border-slate-800">
+              <h3 className="text-lg sm:text-xl font-bold text-white flex items-center gap-3">
+                {editingId ? (
+                  <><Edit2 className="text-cyan-400" size={20} /> تعديل المادة</>
+                ) : (
+                  <><Package className="text-cyan-400" size={20} /> إضافة مادة جديدة</>
+                )}
+              </h3>
+              <button
+                onClick={() => setShowModal(false)}
+                className="p-2 rounded-lg hover:bg-white/5 text-slate-500 hover:text-slate-300 transition-colors cursor-pointer"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="relative z-10 px-6 sm:px-8 py-6 space-y-5" dir="rtl">
+              <div>
+                <label className="block text-xs font-semibold mb-2 text-slate-400 uppercase tracking-wider">اسم المادة الكيميائية</label>
+                <input
+                  required
+                  value={formData.materialName}
+                  onChange={e => setFormData({...formData, materialName: e.target.value})}
+                  placeholder="مثال: حمض الهيدروكلوريك"
+                  className="w-full px-4 py-3 rounded-xl text-sm bg-slate-800/60 border border-slate-700/50 text-white placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 transition-all"
+                />
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-6" dir="rtl">
-                <div>
-                  <label className="block text-sm font-semibold mb-2 text-[var(--text-main)]">اسم المادة الكيميائية</label>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex-1">
+                  <label className="block text-xs font-semibold mb-2 text-slate-400 uppercase tracking-wider">الدولاب</label>
                   <input
                     required
-                    value={formData.materialName}
-                    onChange={e => setFormData({...formData, materialName: e.target.value})}
-                    placeholder="مثال: حمض الهيدروكلوريك"
-                    className="w-full px-4 py-3 rounded-xl text-base bg-white border-2 border-slate-200 text-slate-800 focus:outline-none focus:border-[var(--primary-400)] focus:ring-4 focus:ring-[var(--primary-100)] transition-all"
+                    value={formData.cabinet}
+                    onChange={e => setFormData({...formData, cabinet: e.target.value})}
+                    placeholder="مثال: دولاب أ"
+                    className="w-full px-4 py-3 rounded-xl text-sm bg-slate-800/60 border border-slate-700/50 text-white placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 transition-all"
                   />
                 </div>
-                
-                <div className="flex flex-col sm:flex-row gap-5">
-                  <div className="flex-1">
-                    <label className="block text-sm font-semibold mb-2 text-[var(--text-main)]">الدولاب</label>
-                    <input
-                      required
-                      value={formData.cabinet}
-                      onChange={e => setFormData({...formData, cabinet: e.target.value})}
-                      placeholder="مثال: دولاب أ"
-                      className="w-full px-4 py-3 rounded-xl text-base bg-white border-2 border-slate-200 text-slate-800 focus:outline-none focus:border-[var(--primary-400)] focus:ring-4 focus:ring-[var(--primary-100)] transition-all"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <label className="block text-sm font-semibold mb-2 text-[var(--text-main)]">الرف</label>
-                    <input
-                      value={formData.shelf}
-                      onChange={e => setFormData({...formData, shelf: e.target.value})}
-                      placeholder="مثال: الرف 2"
-                      className="w-full px-4 py-3 rounded-xl text-base bg-white border-2 border-slate-200 text-slate-800 focus:outline-none focus:border-[var(--primary-400)] focus:ring-4 focus:ring-[var(--primary-100)] transition-all"
-                    />
-                  </div>
+                <div className="flex-1">
+                  <label className="block text-xs font-semibold mb-2 text-slate-400 uppercase tracking-wider">الرف</label>
+                  <input
+                    value={formData.shelf}
+                    onChange={e => setFormData({...formData, shelf: e.target.value})}
+                    placeholder="مثال: الرف 2"
+                    className="w-full px-4 py-3 rounded-xl text-sm bg-slate-800/60 border border-slate-700/50 text-white placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 transition-all"
+                  />
                 </div>
+              </div>
 
-                <div className="flex flex-col sm:flex-row gap-5">
-                  <div className="flex-1">
-                    <label className="block text-sm font-semibold mb-2 text-[var(--text-main)]">الكمية / العدد</label>
-                    <input
-                      type="number"
-                      min="0"
-                      required
-                      value={formData.quantity}
-                      onChange={e => setFormData({...formData, quantity: parseInt(e.target.value) || 0})}
-                      className="w-full px-4 py-3 rounded-xl text-base bg-white border-2 border-slate-200 text-slate-800 focus:outline-none focus:border-[var(--primary-400)] focus:ring-4 focus:ring-[var(--primary-100)] transition-all"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <label className="block text-sm font-semibold mb-2 text-[var(--text-main)]">الحالة</label>
-                    <select
-                      value={formData.isAvailable}
-                      onChange={e => setFormData({...formData, isAvailable: e.target.value === 'true'})}
-                      className="w-full px-4 py-3 rounded-xl text-base bg-white border-2 border-slate-200 text-slate-800 focus:outline-none focus:border-[var(--primary-400)] focus:ring-4 focus:ring-[var(--primary-100)] transition-all appearance-none cursor-pointer"
-                    >
-                      <option value="true">متوفر</option>
-                      <option value="false">غير متوفر / نافذ</option>
-                    </select>
-                  </div>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex-1">
+                  <label className="block text-xs font-semibold mb-2 text-slate-400 uppercase tracking-wider">الكمية / العدد</label>
+                  <input
+                    type="number"
+                    min="0"
+                    required
+                    value={formData.quantity}
+                    onChange={e => setFormData({...formData, quantity: parseInt(e.target.value) || 0})}
+                    className="w-full px-4 py-3 rounded-xl text-sm bg-slate-800/60 border border-slate-700/50 text-white placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 transition-all font-mono"
+                  />
                 </div>
+                <div className="flex-1">
+                  <label className="block text-xs font-semibold mb-2 text-slate-400 uppercase tracking-wider">الحالة</label>
+                  <select
+                    value={formData.isAvailable}
+                    onChange={e => setFormData({...formData, isAvailable: e.target.value === 'true'})}
+                    className="w-full px-4 py-3 rounded-xl text-sm bg-slate-800/60 border border-slate-700/50 text-white focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 transition-all appearance-none cursor-pointer"
+                  >
+                    <option value="true">متوفر</option>
+                    <option value="false">غير متوفر / نافذ</option>
+                  </select>
+                </div>
+              </div>
 
-                <div className="flex justify-end gap-4 mt-8 pt-6 border-t border-slate-100">
-                  <button
-                    type="button"
-                    onClick={() => setShowModal(false)}
-                    className="px-6 py-3 rounded-xl text-sm font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors"
-                  >
-                    إلغاء
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-8 py-3 rounded-xl text-sm font-bold text-white shadow-lg shadow-[var(--primary-400)]/30 transition-all hover:shadow-xl hover:-translate-y-0.5"
-                    style={{ background: 'linear-gradient(135deg, var(--primary-500), var(--primary-600))' }}
-                  >
-                    {editingId ? 'حفظ التعديلات' : 'إضافة المادة'}
-                  </button>
-                </div>
-              </form>
-            </div>
+              {/* Actions */}
+              <div className="flex justify-end gap-3 pt-4 border-t border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setShowModal(false)}
+                  className="px-5 py-2.5 rounded-xl text-sm font-medium text-slate-400 bg-slate-800/60 hover:bg-slate-700/60 border border-slate-700/50 transition-colors cursor-pointer"
+                >
+                  إلغاء
+                </button>
+                <button
+                  type="submit"
+                  className="px-6 py-2.5 rounded-xl text-sm font-bold text-white bg-cyan-600 hover:bg-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.3)] transition-all duration-300 cursor-pointer hover:-translate-y-0.5"
+                >
+                  {editingId ? 'حفظ التعديلات' : 'إضافة المادة'}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
