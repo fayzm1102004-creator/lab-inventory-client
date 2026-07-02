@@ -177,7 +177,7 @@ export default function AdminDashboard() {
       <main className="flex-1 w-full px-4 md:px-8 xl:px-12 mx-auto py-6 sm:py-10">
 
         {/* ── Tab Navigation ───────────────────────────────────────── */}
-        <div className="flex items-center gap-2 mb-8 bg-slate-900/60 backdrop-blur-sm p-1.5 rounded-xl border border-slate-800 w-fit">
+        <div className="flex items-center gap-2 mb-10 bg-slate-900/60 backdrop-blur-sm p-1.5 rounded-xl border border-slate-800 w-fit">
           <button
             onClick={() => setActiveTab('inventory')}
             className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 cursor-pointer ${
@@ -229,10 +229,10 @@ export default function AdminDashboard() {
 
         ) : activeTab === 'inventory' ? (
           /* ═══════════════════ INVENTORY TAB ══════════════════════════ */
-          <div className="animate-fade-in-up space-y-6">
+          <div className="animate-fade-in-up flex flex-col flex-1">
 
             {/* ── Header + Add Button ────────────────────────────────── */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-10">
               <div>
                 <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">إدارة المواد الكيميائية</h2>
                 <p className="text-sm text-slate-500 mt-1">إضافة وتعديل وحذف المواد المسجلة في مختبر الكيمياء</p>
@@ -247,16 +247,16 @@ export default function AdminDashboard() {
             </div>
 
             {/* ── Stat Cards ─────────────────────────────────────────── */}
-            <div className="grid grid-cols-3 gap-3 sm:gap-4">
-              <div className="bg-slate-900/50 backdrop-blur-sm border border-slate-800 rounded-xl p-4 text-center">
+            <div className="grid grid-cols-3 gap-4 sm:gap-8 mb-10">
+              <div className="bg-slate-900/50 backdrop-blur-sm border border-slate-800 rounded-xl p-6 text-center">
                 <p className="text-2xl sm:text-3xl font-bold text-white font-mono">{totalMaterials}</p>
                 <p className="text-xs text-slate-500 mt-1">إجمالي المواد</p>
               </div>
-              <div className="bg-emerald-500/5 backdrop-blur-sm border border-emerald-500/20 rounded-xl p-4 text-center">
+              <div className="bg-emerald-500/5 backdrop-blur-sm border border-emerald-500/20 rounded-xl p-6 text-center">
                 <p className="text-2xl sm:text-3xl font-bold text-emerald-400 font-mono">{availableCount}</p>
                 <p className="text-xs text-emerald-500/70 mt-1">متوفر</p>
               </div>
-              <div className="bg-rose-500/5 backdrop-blur-sm border border-rose-500/20 rounded-xl p-4 text-center">
+              <div className="bg-rose-500/5 backdrop-blur-sm border border-rose-500/20 rounded-xl p-6 text-center">
                 <p className="text-2xl sm:text-3xl font-bold text-rose-400 font-mono">{outOfStockCount}</p>
                 <p className="text-xs text-rose-500/70 mt-1">غير متوفر</p>
               </div>
@@ -267,11 +267,11 @@ export default function AdminDashboard() {
               <table className="w-full text-sm" dir="rtl">
                 <thead className="bg-slate-800/80">
                   <tr>
-                    <th className="px-6 py-4 text-cyan-400 font-semibold text-right text-xs uppercase tracking-wider">اسم المادة</th>
-                    <th className="px-6 py-4 text-cyan-400 font-semibold text-right text-xs uppercase tracking-wider">المكان</th>
-                    <th className="px-6 py-4 text-cyan-400 font-semibold text-center text-xs uppercase tracking-wider">الحالة</th>
-                    <th className="px-6 py-4 text-cyan-400 font-semibold text-center text-xs uppercase tracking-wider">الكمية</th>
-                    <th className="px-6 py-4 text-cyan-400 font-semibold text-center text-xs uppercase tracking-wider">إجراءات</th>
+                    <th className="px-6 py-5 text-cyan-400 font-semibold text-right text-sm uppercase tracking-wider">اسم المادة</th>
+                    <th className="px-6 py-5 text-cyan-400 font-semibold text-right text-sm uppercase tracking-wider">المكان</th>
+                    <th className="px-6 py-5 text-cyan-400 font-semibold text-center text-sm uppercase tracking-wider">الحالة</th>
+                    <th className="px-6 py-5 text-cyan-400 font-semibold text-center text-sm uppercase tracking-wider">الكمية</th>
+                    <th className="px-6 py-5 text-cyan-400 font-semibold text-center text-sm uppercase tracking-wider">إجراءات</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -289,44 +289,44 @@ export default function AdminDashboard() {
                       style={{ animationDelay: `${i * 40}ms` }}
                     >
                       {/* اسم المادة */}
-                      <td className="px-6 py-4 text-right">
+                      <td className="px-6 py-5 text-right">
                         <div className="flex items-center gap-3">
                           <div className={`w-2 h-2 rounded-full shrink-0 ${m.isAvailable ? 'bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.5)]' : 'bg-rose-400 shadow-[0_0_6px_rgba(251,113,133,0.5)]'}`} />
-                          <span className="font-medium text-slate-200">{m.materialName}</span>
+                          <span className="font-medium text-slate-200 text-base">{m.materialName}</span>
                         </div>
                       </td>
 
                       {/* المكان */}
-                      <td className="px-6 py-4 text-right">
-                        <span className="inline-flex items-center gap-1.5 bg-slate-800/80 border border-slate-700/50 px-3 py-1.5 rounded-lg text-xs">
-                          <MapPin size={12} className="text-cyan-400 shrink-0" />
+                      <td className="px-6 py-5 text-right">
+                        <span className="inline-flex items-center gap-1.5 bg-slate-800/80 border border-slate-700/50 px-3 py-1.5 rounded-lg text-sm">
+                          <MapPin size={14} className="text-cyan-400 shrink-0" />
                           <span className="text-slate-300">{m.physicalLocation || '—'}</span>
                         </span>
                       </td>
 
                       {/* الحالة */}
-                      <td className="px-6 py-4 text-center">
+                      <td className="px-6 py-5 text-center">
                         {m.isAvailable ? (
-                          <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-3 py-1 rounded-full text-xs font-medium inline-block">
+                          <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-4 py-1.5 rounded-full text-sm font-medium inline-block">
                             متوفر
                           </span>
                         ) : (
-                          <span className="bg-rose-500/10 text-rose-400 border border-rose-500/20 px-3 py-1 rounded-full text-xs font-medium inline-block">
+                          <span className="bg-rose-500/10 text-rose-400 border border-rose-500/20 px-4 py-1.5 rounded-full text-sm font-medium inline-block">
                             غير متوفر
                           </span>
                         )}
                       </td>
 
                       {/* الكمية */}
-                      <td className="px-6 py-4 text-center">
-                        <span className="font-mono text-slate-300 bg-slate-800/60 px-3 py-1 rounded-md border border-slate-700/40 text-sm">
+                      <td className="px-6 py-5 text-center">
+                        <span className="font-mono text-slate-300 bg-slate-800/60 px-4 py-1.5 rounded-md border border-slate-700/40 text-base">
                           {m.quantity}
                         </span>
                       </td>
 
                       {/* إجراءات */}
-                      <td className="px-6 py-4">
-                        <div className="flex justify-center gap-1">
+                      <td className="px-6 py-5">
+                        <div className="flex justify-center gap-2">
                           <button
                             onClick={() => openModal(m)}
                             className="p-2 rounded-lg text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 transition-all duration-200 cursor-pointer"
@@ -409,8 +409,8 @@ export default function AdminDashboard() {
 
         ) : (
           /* ═══════════════════ AUDIT LOGS TAB ═════════════════════════ */
-          <div className="animate-fade-in-up space-y-6">
-            <div>
+          <div className="animate-fade-in-up flex flex-col flex-1">
+            <div className="mb-10">
               <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">سجل النشاطات</h2>
               <p className="text-sm text-slate-500 mt-1">متابعة جميع عمليات تسجيل الدخول والبحث للمستخدمين</p>
             </div>
@@ -420,10 +420,10 @@ export default function AdminDashboard() {
               <table className="w-full text-sm" dir="rtl">
                 <thead className="bg-slate-800/80">
                   <tr>
-                    <th className="px-6 py-4 text-cyan-400 font-semibold text-right text-xs uppercase tracking-wider">اسم المستخدم</th>
-                    <th className="px-6 py-4 text-cyan-400 font-semibold text-center text-xs uppercase tracking-wider">وقت الدخول</th>
-                    <th className="px-6 py-4 text-cyan-400 font-semibold text-center text-xs uppercase tracking-wider">عمليات البحث</th>
-                    <th className="px-6 py-4 text-cyan-400 font-semibold text-center text-xs uppercase tracking-wider">وقت الخروج</th>
+                    <th className="px-6 py-5 text-cyan-400 font-semibold text-right text-sm uppercase tracking-wider">اسم المستخدم</th>
+                    <th className="px-6 py-5 text-cyan-400 font-semibold text-center text-sm uppercase tracking-wider">وقت الدخول</th>
+                    <th className="px-6 py-5 text-cyan-400 font-semibold text-center text-sm uppercase tracking-wider">عمليات البحث</th>
+                    <th className="px-6 py-5 text-cyan-400 font-semibold text-center text-sm uppercase tracking-wider">وقت الخروج</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -440,13 +440,13 @@ export default function AdminDashboard() {
                       className="hover:bg-cyan-950/20 transition-colors duration-200 border-b border-slate-800/60"
                       style={{ animationDelay: `${i * 40}ms` }}
                     >
-                      <td className="px-6 py-4 text-right">
-                        <span className="font-medium text-slate-200">{log.userName}</span>
+                      <td className="px-6 py-5 text-right">
+                        <span className="font-medium text-slate-200 text-base">{log.userName}</span>
                       </td>
-                      <td className="px-6 py-4 text-center" dir="ltr">
-                        <span className="font-mono text-xs text-slate-400">{formatDate(log.loginTime)}</span>
+                      <td className="px-6 py-5 text-center" dir="ltr">
+                        <span className="font-mono text-sm text-slate-400">{formatDate(log.loginTime)}</span>
                       </td>
-                      <td className="px-6 py-4 text-center">
+                      <td className="px-6 py-5 text-center">
                         {log.searchKeywords ? (
                           <span className="text-xs text-slate-400 italic bg-slate-800/50 px-3 py-1 rounded-lg border border-slate-700/30 inline-block max-w-[200px] truncate">
                             {log.searchKeywords}
@@ -455,11 +455,11 @@ export default function AdminDashboard() {
                           <span className="text-slate-600">—</span>
                         )}
                       </td>
-                      <td className="px-6 py-4 text-center" dir="ltr">
+                      <td className="px-6 py-5 text-center" dir="ltr">
                         {log.logoutTime ? (
-                          <span className="font-mono text-xs text-slate-400">{formatDate(log.logoutTime)}</span>
+                          <span className="font-mono text-sm text-slate-400">{formatDate(log.logoutTime)}</span>
                         ) : (
-                          <span className="inline-flex items-center gap-1.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-3 py-1 rounded-full text-xs font-medium">
+                          <span className="inline-flex items-center gap-1.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-4 py-1.5 rounded-full text-sm font-medium">
                             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_6px_rgba(52,211,153,0.6)]" />
                             متصل الآن
                           </span>
