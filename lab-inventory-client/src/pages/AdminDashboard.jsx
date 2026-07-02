@@ -300,83 +300,106 @@ export default function AdminDashboard() {
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="glass-card w-full max-w-md p-6 animate-fade-in-up">
-            <h3 className="text-lg font-bold text-[var(--text-main)] mb-4">
-              {editingId ? 'Edit Material' : 'Add Material'}
-            </h3>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-xs font-medium mb-1 text-[var(--text-muted)]">Material Name</label>
-                <input
-                  required
-                  value={formData.materialName}
-                  onChange={e => setFormData({...formData, materialName: e.target.value})}
-                  className="w-full px-3 py-2 rounded-lg text-sm bg-[var(--bg-hover)] border border-[var(--border-subtle)] text-[var(--text-main)] focus:outline-none focus:border-[var(--primary-500)]"
-                />
-              </div>
-              <div className="flex gap-4">
-                <div className="flex-1">
-                  <label className="block text-xs font-medium mb-1 text-[var(--text-muted)]">Cabinet (الدولاب)</label>
-                  <input
-                    required
-                    value={formData.cabinet}
-                    onChange={e => setFormData({...formData, cabinet: e.target.value})}
-                    placeholder="e.g. A, 1"
-                    className="w-full px-3 py-2 rounded-lg text-sm bg-[var(--bg-hover)] border border-[var(--border-subtle)] text-[var(--text-main)] focus:outline-none focus:border-[var(--primary-500)]"
-                  />
-                </div>
-                <div className="flex-1">
-                  <label className="block text-xs font-medium mb-1 text-[var(--text-muted)]">Shelf (الرف)</label>
-                  <input
-                    value={formData.shelf}
-                    onChange={e => setFormData({...formData, shelf: e.target.value})}
-                    placeholder="e.g. 1, 2"
-                    className="w-full px-3 py-2 rounded-lg text-sm bg-[var(--bg-hover)] border border-[var(--border-subtle)] text-[var(--text-main)] focus:outline-none focus:border-[var(--primary-500)]"
-                  />
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <div className="flex-1">
-                  <label className="block text-xs font-medium mb-1 text-[var(--text-muted)]">Quantity</label>
-                  <input
-                    type="number"
-                    min="0"
-                    required
-                    value={formData.quantity}
-                    onChange={e => setFormData({...formData, quantity: parseInt(e.target.value) || 0})}
-                    className="w-full px-3 py-2 rounded-lg text-sm bg-[var(--bg-hover)] border border-[var(--border-subtle)] text-[var(--text-main)] focus:outline-none focus:border-[var(--primary-500)]"
-                  />
-                </div>
-                <div className="flex-1">
-                  <label className="block text-xs font-medium mb-1 text-[var(--text-muted)]">Status</label>
-                  <select
-                    value={formData.isAvailable}
-                    onChange={e => setFormData({...formData, isAvailable: e.target.value === 'true'})}
-                    className="w-full px-3 py-2 rounded-lg text-sm bg-[var(--bg-hover)] border border-[var(--border-subtle)] text-[var(--text-main)] focus:outline-none focus:border-[var(--primary-500)]"
-                  >
-                    <option value="true">Available</option>
-                    <option value="false">Unavailable</option>
-                  </select>
-                </div>
-              </div>
-              <div className="flex justify-end gap-3 mt-6">
-                <button
-                  type="button"
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-slate-900/40 backdrop-blur-md transition-all">
+          <div className="glass-card w-full max-w-lg p-8 sm:p-10 animate-fade-in-up relative overflow-hidden shadow-2xl">
+            {/* Decorative background element for chemistry vibe */}
+            <div className="absolute -top-24 -right-24 w-48 h-48 bg-[var(--primary-300)] rounded-full mix-blend-multiply filter blur-3xl opacity-30"></div>
+            <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-[var(--accent-400)] rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
+            
+            <div className="relative z-10">
+              <div className="flex justify-between items-center mb-8">
+                <h3 className="text-2xl font-bold text-[var(--text-main)] flex items-center gap-3">
+                  {editingId ? (
+                    <><Edit2 className="text-[var(--primary-500)]" size={24} /> تعديل المادة</>
+                  ) : (
+                    <><Package className="text-[var(--primary-500)]" size={24} /> إضافة مادة جديدة</>
+                  )}
+                </h3>
+                <button 
                   onClick={() => setShowModal(false)}
-                  className="px-4 py-2 rounded-lg text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors"
+                  className="p-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"
                 >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 rounded-lg text-sm font-medium text-[var(--text-main)] transition-all hover:shadow-lg"
-                  style={{ background: 'linear-gradient(135deg, var(--primary-600), var(--primary-800))' }}
-                >
-                  Save
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
                 </button>
               </div>
-            </form>
+
+              <form onSubmit={handleSubmit} className="space-y-6" dir="rtl">
+                <div>
+                  <label className="block text-sm font-semibold mb-2 text-[var(--text-main)]">اسم المادة الكيميائية</label>
+                  <input
+                    required
+                    value={formData.materialName}
+                    onChange={e => setFormData({...formData, materialName: e.target.value})}
+                    placeholder="مثال: حمض الهيدروكلوريك"
+                    className="w-full px-4 py-3 rounded-xl text-base bg-white border-2 border-slate-200 text-slate-800 focus:outline-none focus:border-[var(--primary-400)] focus:ring-4 focus:ring-[var(--primary-100)] transition-all"
+                  />
+                </div>
+                
+                <div className="flex flex-col sm:flex-row gap-5">
+                  <div className="flex-1">
+                    <label className="block text-sm font-semibold mb-2 text-[var(--text-main)]">الدولاب</label>
+                    <input
+                      required
+                      value={formData.cabinet}
+                      onChange={e => setFormData({...formData, cabinet: e.target.value})}
+                      placeholder="مثال: دولاب أ"
+                      className="w-full px-4 py-3 rounded-xl text-base bg-white border-2 border-slate-200 text-slate-800 focus:outline-none focus:border-[var(--primary-400)] focus:ring-4 focus:ring-[var(--primary-100)] transition-all"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <label className="block text-sm font-semibold mb-2 text-[var(--text-main)]">الرف</label>
+                    <input
+                      value={formData.shelf}
+                      onChange={e => setFormData({...formData, shelf: e.target.value})}
+                      placeholder="مثال: الرف 2"
+                      className="w-full px-4 py-3 rounded-xl text-base bg-white border-2 border-slate-200 text-slate-800 focus:outline-none focus:border-[var(--primary-400)] focus:ring-4 focus:ring-[var(--primary-100)] transition-all"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-5">
+                  <div className="flex-1">
+                    <label className="block text-sm font-semibold mb-2 text-[var(--text-main)]">الكمية / العدد</label>
+                    <input
+                      type="number"
+                      min="0"
+                      required
+                      value={formData.quantity}
+                      onChange={e => setFormData({...formData, quantity: parseInt(e.target.value) || 0})}
+                      className="w-full px-4 py-3 rounded-xl text-base bg-white border-2 border-slate-200 text-slate-800 focus:outline-none focus:border-[var(--primary-400)] focus:ring-4 focus:ring-[var(--primary-100)] transition-all"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <label className="block text-sm font-semibold mb-2 text-[var(--text-main)]">الحالة</label>
+                    <select
+                      value={formData.isAvailable}
+                      onChange={e => setFormData({...formData, isAvailable: e.target.value === 'true'})}
+                      className="w-full px-4 py-3 rounded-xl text-base bg-white border-2 border-slate-200 text-slate-800 focus:outline-none focus:border-[var(--primary-400)] focus:ring-4 focus:ring-[var(--primary-100)] transition-all appearance-none cursor-pointer"
+                    >
+                      <option value="true">متوفر</option>
+                      <option value="false">غير متوفر / نافذ</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="flex justify-end gap-4 mt-8 pt-6 border-t border-slate-100">
+                  <button
+                    type="button"
+                    onClick={() => setShowModal(false)}
+                    className="px-6 py-3 rounded-xl text-sm font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors"
+                  >
+                    إلغاء
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-8 py-3 rounded-xl text-sm font-bold text-white shadow-lg shadow-[var(--primary-400)]/30 transition-all hover:shadow-xl hover:-translate-y-0.5"
+                    style={{ background: 'linear-gradient(135deg, var(--primary-500), var(--primary-600))' }}
+                  >
+                    {editingId ? 'حفظ التعديلات' : 'إضافة المادة'}
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       )}
