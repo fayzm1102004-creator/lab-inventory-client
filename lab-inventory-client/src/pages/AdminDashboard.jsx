@@ -232,16 +232,16 @@ export default function AdminDashboard() {
           <div className="animate-fade-in-up flex flex-col flex-1">
 
             {/* ── Header + Add Button ────────────────────────────────── */}
-            <div className="flex flex-col items-center justify-center gap-6 mt-6 mb-20 text-center w-full">
-              <div>
-                <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">إدارة المواد الكيميائية</h2>
-                <p className="text-base text-slate-500 mt-2">إضافة وتعديل وحذف المواد المسجلة في مختبر الكيمياء</p>
+            <div className="flex flex-col items-center justify-center mt-12 mb-32 text-center w-full">
+              <div className="mb-10">
+                <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight drop-shadow-md">إدارة المواد الكيميائية</h2>
+                <p className="text-lg text-slate-400 mt-4">إضافة وتعديل وحذف المواد المسجلة في مختبر الكيمياء</p>
               </div>
               <button
                 onClick={() => openModal()}
-                className="flex items-center gap-2 bg-cyan-600 hover:bg-cyan-500 shadow-[0_0_20px_rgba(6,182,212,0.5)] px-10 py-4 rounded-2xl text-white text-base font-bold transition-all duration-300 cursor-pointer hover:-translate-y-1 active:translate-y-0 shrink-0"
+                className="flex items-center gap-3 bg-cyan-600 hover:bg-cyan-500 shadow-[0_0_25px_rgba(6,182,212,0.6)] px-12 py-5 rounded-2xl text-white text-lg font-bold transition-all duration-300 cursor-pointer hover:-translate-y-1 active:translate-y-0 shrink-0"
               >
-                <Plus size={22} />
+                <Plus size={24} />
                 إضافة مادة جديدة
               </button>
             </div>
@@ -410,9 +410,9 @@ export default function AdminDashboard() {
         ) : (
           /* ═══════════════════ AUDIT LOGS TAB ═════════════════════════ */
           <div className="animate-fade-in-up flex flex-col flex-1">
-            <div className="flex flex-col items-center justify-center gap-2 mt-6 mb-14 text-center w-full">
-              <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">سجل النشاطات</h2>
-              <p className="text-base text-slate-500 mt-1">متابعة جميع عمليات تسجيل الدخول والبحث للمستخدمين</p>
+            <div className="flex flex-col items-center justify-center mt-12 mb-24 text-center w-full">
+              <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight drop-shadow-md">سجل النشاطات</h2>
+              <p className="text-lg text-slate-400 mt-4">متابعة جميع عمليات تسجيل الدخول والبحث للمستخدمين</p>
             </div>
 
             {/* ═══ Desktop Table ═══════════════════════════════════════ */}
