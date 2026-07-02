@@ -71,9 +71,9 @@ export default function UserSearch() {
   const outOfStockCount = totalResults - availableCount;
 
   return (
-    <div className="bg-[#0B1121] text-slate-100 min-h-screen font-sans" dir="rtl">
+    <div className="min-h-screen bg-[#0B1121] text-slate-100 font-sans flex flex-col" dir="rtl">
       {/* ═══════════════════ Navbar ═══════════════════════════════════ */}
-      <nav className="sticky top-0 z-50 bg-white/5 backdrop-blur-md border-b border-white/10 px-6 py-4 flex justify-between items-center">
+      <nav className="sticky top-0 z-50 w-full bg-white/5 backdrop-blur-md border-b border-white/10 px-6 md:px-12 lg:px-16 py-4 flex justify-between items-center">
         <div className="flex items-center gap-3">
           <FlaskConical size={24} className="text-emerald-400" />
           <span className="font-semibold text-white text-lg hidden sm:inline-block">نظام إدارة المعمل</span>
@@ -93,18 +93,18 @@ export default function UserSearch() {
       </nav>
 
       {/* ═══════════════════ Main ═════════════════════════════════════ */}
-      <main className="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 py-10">
-        <div className="animate-fade-in-up">
+      <main className="flex-grow w-full max-w-5xl mx-auto px-4 md:px-8 pt-12 md:pt-20 flex flex-col items-center">
+        <div className="w-full animate-fade-in-up">
 
           {/* ── Search Bar Wrapper ─────────────────────────────────────────── */}
-          <div className="w-full max-w-3xl mx-auto mt-6 sm:mt-10 px-0 sm:px-4">
-            <div className="text-center mb-8">
-              <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">البحث عن المواد الكيميائية</h1>
-              <p className="text-slate-400 text-sm sm:text-base">ابحث عن أي مادة لتحديد مكانها بدقة داخل المعمل</p>
-            </div>
+          <div className="text-center w-full mb-8">
+            <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2 text-center w-full">البحث عن المواد الكيميائية</h1>
+            <p className="text-slate-400 text-sm sm:text-base text-center w-full">ابحث عن أي مادة لتحديد مكانها بدقة داخل المعمل</p>
+          </div>
 
-            <form onSubmit={handleSearch} className="relative mb-10">
-              <div className="absolute right-4 top-1/2 -translate-y-1/2">
+          <div className="w-full max-w-3xl mx-auto mt-8 relative">
+            <form onSubmit={handleSearch} className="relative mb-10 w-full">
+              <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
                 <Search size={24} className="text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
               </div>
               <input
@@ -131,7 +131,7 @@ export default function UserSearch() {
           {/* ── Results Area ───────────────────────────────────────── */}
           {results === null ? (
             /* ▸ Initial / idle state */
-            <div className="text-center py-16 animate-fade-in-up mt-10">
+            <div className="mt-16 flex flex-col items-center justify-center text-center animate-fade-in-up">
               <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-slate-800/30 border border-slate-700/50 mb-6 shadow-lg shadow-slate-900/20">
                 <Beaker size={48} className="text-slate-600" />
               </div>
@@ -153,10 +153,10 @@ export default function UserSearch() {
 
           ) : (
             /* ▸ Results */
-            <div className="animate-fade-in-up mt-8">
+            <div className="animate-fade-in-up mt-8 w-full">
 
               {/* Stats chips */}
-              <div className="flex flex-wrap items-center gap-3 mb-6 justify-center md:justify-start">
+              <div className="flex flex-wrap items-center gap-3 mb-6 justify-center md:justify-start w-full">
                 <span className="flex items-center gap-2 bg-slate-800/80 border border-slate-700 text-slate-300 px-4 py-2 rounded-xl text-sm font-medium shadow-sm">
                   <Package size={16} />
                   {totalResults} نتيجة
@@ -176,7 +176,7 @@ export default function UserSearch() {
               </div>
 
               {/* ═══ Desktop / Tablet Table ═══════════════════════════ */}
-              <div className="hidden md:block bg-slate-900/50 backdrop-blur-md rounded-xl border border-slate-800 shadow-2xl overflow-hidden max-w-5xl mx-auto">
+              <div className="hidden md:block bg-slate-900/50 backdrop-blur-md rounded-xl border border-slate-800 shadow-2xl overflow-hidden w-full mx-auto">
                 <table className="w-full text-sm text-right">
                   <thead className="bg-slate-800/80 text-emerald-400 font-semibold border-b border-slate-700">
                     <tr>
@@ -249,13 +249,13 @@ export default function UserSearch() {
               </div>
 
               {/* ═══ Mobile Cards ═════════════════════════════════════ */}
-              <div className="md:hidden space-y-4">
+              <div className="md:hidden space-y-4 w-full">
                 {results.map((m) => {
                   const loc = parseLocation(m.physicalLocation);
                   return (
                     <div
                       key={m.id}
-                      className="bg-slate-900/50 backdrop-blur-md border border-slate-800 rounded-xl p-5 shadow-lg"
+                      className="bg-slate-900/50 backdrop-blur-md border border-slate-800 rounded-xl p-5 shadow-lg w-full"
                     >
                       {/* Top row: name + badge */}
                       <div className="flex items-start justify-between gap-3 mb-4 border-b border-slate-800 pb-4">
