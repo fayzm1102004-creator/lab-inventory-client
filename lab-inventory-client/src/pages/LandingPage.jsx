@@ -1,88 +1,69 @@
 import { useNavigate } from 'react-router-dom';
-import { FlaskConical, ShieldCheck, Search, Atom } from 'lucide-react';
+import { FlaskConical, ShieldCheck, Search } from 'lucide-react';
 
 export default function LandingPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden px-4">
-      {/* Animated background orbs */}
+    <div className="bg-[#0B1121] text-slate-100 min-h-screen flex items-center justify-center font-sans relative overflow-hidden px-4" dir="rtl">
+      {/* Animated background glows */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full opacity-10 animate-float"
-             style={{ background: 'radial-gradient(circle, var(--primary-500), transparent 70%)' }} />
-        <div className="absolute bottom-1/3 right-1/4 w-72 h-72 rounded-full opacity-8"
-             style={{ background: 'radial-gradient(circle, var(--accent-500), transparent 70%)', animation: 'float 8s ease-in-out infinite reverse' }} />
-        <div className="absolute top-1/2 right-1/3 w-48 h-48 rounded-full opacity-5"
-             style={{ background: 'radial-gradient(circle, var(--success-500), transparent 70%)', animation: 'float 10s ease-in-out infinite' }} />
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-[100px]" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-[100px]" />
       </div>
 
-      {/* Hero content */}
-      <div className="relative z-10 text-center max-w-2xl animate-fade-in-up">
-        {/* Logo / Icon cluster */}
-        <div className="flex items-center justify-center gap-3 mb-6">
-          <div className="p-3 rounded-2xl" style={{ background: 'linear-gradient(135deg, var(--primary-600), var(--primary-800))' }}>
-            <FlaskConical size={36} className="text-[var(--text-main)]" />
+      <div className="relative z-10 w-full flex flex-col items-center animate-fade-in-up">
+        {/* Title Section */}
+        <div className="flex items-center justify-center gap-4 mb-6">
+          <div className="p-4 rounded-2xl bg-slate-800/50 border border-slate-700/50 shadow-lg">
+            <FlaskConical size={40} className="text-cyan-400" />
           </div>
-          <Atom size={20} className="opacity-40 animate-float" style={{ color: 'var(--accent-400)' }} />
         </div>
-
-        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-3"
-            style={{ background: 'linear-gradient(135deg, #e4e4e7, var(--primary-300))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-          Lab Inventory
+        
+        <h1 className="text-4xl md:text-5xl font-bold text-center mb-4 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-emerald-400">
+          نظام إدارة معمل الكيمياء
         </h1>
-        <p className="text-lg md:text-xl font-light mb-2" style={{ color: 'var(--text-muted)' }}>
-          Location Management System
-        </p>
-        <p className="text-sm mb-12" style={{ color: 'var(--text-dim)' }}>
-          Track every chemical. Know exactly where it is.
+        <p className="text-slate-400 text-center text-lg max-w-xl mb-8">
+          اختر دورك للدخول إلى النظام
         </p>
 
-        {/* Role selection cards */}
-        <div className="flex flex-col sm:flex-row gap-6 justify-center">
-          {/* Admin card */}
+        {/* Role Selection Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-3xl mt-8">
+          
+          {/* Admin Card */}
           <button
-            id="admin-login-btn"
             onClick={() => navigate('/admin/login')}
-            className="glass-card glass-card-hover group cursor-pointer flex flex-col items-center gap-5 p-10 w-full sm:w-72 transition-all duration-300"
+            className="group flex flex-col items-center gap-6 bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-8 shadow-[0_0_50px_rgba(0,0,0,0.6)] hover:-translate-y-2 hover:shadow-[0_0_30px_rgba(34,211,238,0.3)] hover:border-cyan-500/50 transition-all duration-300 cursor-pointer"
           >
-            <div className="p-5 rounded-2xl transition-all duration-300"
-                 style={{ background: 'rgba(92, 124, 250, 0.1)' }}>
-              <ShieldCheck size={36} style={{ color: 'var(--primary-400)' }}
-                           className="group-hover:scale-110 transition-transform" />
+            <div className="p-6 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 group-hover:bg-cyan-500/20 transition-all duration-300">
+              <ShieldCheck size={48} className="text-cyan-400 group-hover:scale-110 transition-transform" />
             </div>
-            <div>
-              <h2 className="text-xl font-semibold text-[var(--text-main)] mb-2">Administrator</h2>
-              <p className="text-sm" style={{ color: 'var(--text-dim)' }}>
-                Manage inventory & logs
+            <div className="text-center">
+              <h2 className="text-2xl font-bold text-slate-100 mb-2">مدير النظام</h2>
+              <p className="text-slate-400 text-sm">
+                إدارة المخزون، سجلات الدخول، وإضافة المواد
               </p>
             </div>
           </button>
 
-          {/* User card */}
+          {/* Lab User Card */}
           <button
-            id="user-login-btn"
             onClick={() => navigate('/user/login')}
-            className="glass-card glass-card-hover group cursor-pointer flex flex-col items-center gap-5 p-10 w-full sm:w-72 transition-all duration-300"
+            className="group flex flex-col items-center gap-6 bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-8 shadow-[0_0_50px_rgba(0,0,0,0.6)] hover:-translate-y-2 hover:shadow-[0_0_30px_rgba(16,185,129,0.3)] hover:border-emerald-500/50 transition-all duration-300 cursor-pointer"
           >
-            <div className="p-5 rounded-2xl transition-all duration-300"
-                 style={{ background: 'rgba(59, 201, 219, 0.1)' }}>
-              <Search size={36} style={{ color: 'var(--accent-400)' }}
-                      className="group-hover:scale-110 transition-transform" />
+            <div className="p-6 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 group-hover:bg-emerald-500/20 transition-all duration-300">
+              <Search size={48} className="text-emerald-400 group-hover:scale-110 transition-transform" />
             </div>
-            <div>
-              <h2 className="text-xl font-semibold text-[var(--text-main)] mb-2">Lab User</h2>
-              <p className="text-sm" style={{ color: 'var(--text-dim)' }}>
-                Search materials
+            <div className="text-center">
+              <h2 className="text-2xl font-bold text-slate-100 mb-2">مستخدم المعمل</h2>
+              <p className="text-slate-400 text-sm">
+                البحث عن المواد الكيميائية وأماكنها
               </p>
             </div>
           </button>
+
         </div>
       </div>
-
-      {/* Footer */}
-      <p className="absolute bottom-6 text-xs" style={{ color: 'var(--gray-700)' }}>
-        Chemistry Laboratory Inventory System © {new Date().getFullYear()}
-      </p>
     </div>
   );
 }

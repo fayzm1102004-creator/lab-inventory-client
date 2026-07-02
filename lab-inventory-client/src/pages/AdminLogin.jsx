@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ShieldCheck, Eye, EyeOff, ArrowLeft, Loader2 } from 'lucide-react';
+import { ShieldCheck, Eye, EyeOff, ArrowRight, Loader2 } from 'lucide-react';
 import { adminLogin } from '../api';
 
 export default function AdminLogin() {
@@ -15,7 +15,7 @@ export default function AdminLogin() {
     e.preventDefault();
     setError('');
     if (!username.trim() || !password.trim()) {
-      setError('Please enter both username and password.');
+      setError('الرجاء إدخال اسم المستخدم وكلمة المرور.');
       return;
     }
 
@@ -26,124 +26,107 @@ export default function AdminLogin() {
       localStorage.setItem('adminUsername', res.data.username);
       navigate('/admin/dashboard');
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed. Check your credentials.');
+      setError(err.response?.data?.message || 'فشل تسجيل الدخول. تأكد من بياناتك.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 relative">
-      {/* Subtle background glow */}
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[500px] h-[500px] rounded-full opacity-10 pointer-events-none"
-           style={{ background: 'radial-gradient(circle, var(--primary-500), transparent 70%)' }} />
+    <div className="bg-[#0B1121] text-slate-100 min-h-screen flex items-center justify-center font-sans p-4 relative overflow-hidden" dir="rtl">
+      {/* Background Glow */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-[100px] pointer-events-none" />
 
-      <div className="w-full max-w-md relative z-10 animate-fade-in-up">
-        {/* Card */}
-        <div className="glass-card p-10 md:p-12">
-          {/* Back button */}
-          <button
-            id="back-to-home-btn"
-            onClick={() => navigate('/')}
-            className="flex items-center gap-2 text-sm mb-6 transition-colors cursor-pointer hover:text-[var(--text-main)]"
-            style={{ color: 'var(--text-dim)' }}
-          >
-            <ArrowLeft size={16} />
-            Back
-          </button>
+      {/* Container */}
+      <div className="w-full max-w-md bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-8 shadow-[0_0_50px_rgba(0,0,0,0.6)] relative z-10 animate-fade-in-up">
+        
+        {/* Back Button */}
+        <button
+          onClick={() => navigate('/')}
+          className="flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors cursor-pointer mb-8 w-fit"
+        >
+          <ArrowRight size={18} />
+          العودة للرئيسية
+        </button>
 
-          <div className="flex items-center gap-3 mb-10">
-            <div className="p-3 rounded-xl" style={{ background: 'linear-gradient(135deg, var(--primary-600), var(--primary-800))' }}>
-              <ShieldCheck size={24} className="text-[var(--text-main)]" />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold text-[var(--text-main)]">Admin Login</h1>
-              <p className="text-xs" style={{ color: 'var(--text-dim)' }}>Authorized personnel only</p>
+        {/* Header */}
+        <div className="flex items-center gap-4 mb-8">
+          <div className="p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/20">
+            <ShieldCheck size={28} className="text-cyan-400" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-white">تسجيل دخول المشرف</h1>
+            <p className="text-sm text-slate-400 mt-1">للمشرفين المصرح لهم فقط</p>
+          </div>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Username */}
+          <div>
+            <label htmlFor="admin-username" className="block text-sm font-medium mb-2 text-slate-300">
+              اسم المستخدم
+            </label>
+            <input
+              id="admin-username"
+              type="text"
+              value={username}
+              onChange={e => setUsername(e.target.value)}
+              placeholder="أدخل اسم المستخدم"
+              autoComplete="username"
+              className="w-full bg-slate-900/60 border border-slate-700 rounded-xl p-3 text-slate-100 placeholder-slate-500 focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition-all"
+            />
+          </div>
+
+          {/* Password */}
+          <div>
+            <label htmlFor="admin-password" className="block text-sm font-medium mb-2 text-slate-300">
+              كلمة المرور
+            </label>
+            <div className="relative">
+              <input
+                id="admin-password"
+                type={showPw ? 'text' : 'password'}
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                placeholder="أدخل كلمة المرور"
+                autoComplete="current-password"
+                className="w-full bg-slate-900/60 border border-slate-700 rounded-xl p-3 text-slate-100 placeholder-slate-500 focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition-all pl-12"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPw(!showPw)}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors cursor-pointer"
+              >
+                {showPw ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Username */}
-            <div>
-              <label htmlFor="admin-username" className="block text-sm font-medium mb-3" style={{ color: 'var(--text-muted)' }}>
-                Username
-              </label>
-              <input
-                id="admin-username"
-                type="text"
-                value={username}
-                onChange={e => setUsername(e.target.value)}
-                placeholder="Enter admin username"
-                autoComplete="username"
-                className="w-full px-5 py-4 rounded-2xl text-sm text-[var(--text-main)] placeholder:text-gray-600 outline-none transition-all duration-200 focus:ring-2"
-                style={{
-                  background: 'var(--bg-hover)',
-                  border: '1px solid var(--border-subtle)',
-                  focusRing: 'var(--primary-500)',
-                }}
-              />
+          {/* Error Message */}
+          {error && (
+            <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm px-4 py-3 rounded-xl flex items-center">
+              {error}
             </div>
+          )}
 
-            {/* Password */}
-            <div>
-              <label htmlFor="admin-password" className="block text-sm font-medium mb-3 mt-6" style={{ color: 'var(--text-muted)' }}>
-                Password
-              </label>
-              <div className="relative">
-                <input
-                  id="admin-password"
-                  type={showPw ? 'text' : 'password'}
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  placeholder="Enter password"
-                  autoComplete="current-password"
-                  className="w-full px-5 py-4 pr-12 rounded-2xl text-sm text-[var(--text-main)] placeholder:text-gray-600 outline-none transition-all duration-200"
-                  style={{
-                    background: 'var(--bg-hover)',
-                    border: '1px solid var(--border-subtle)',
-                  }}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPw(!showPw)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
-                  style={{ color: 'var(--text-dim)' }}
-                >
-                  {showPw ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
-              </div>
-            </div>
-
-            {/* Error */}
-            {error && (
-              <div className="flex items-center gap-2 text-sm px-5 py-4 rounded-2xl mt-6"
-                   style={{ background: 'rgba(255, 107, 107, 0.1)', color: 'var(--danger-500)', border: '1px solid rgba(255, 107, 107, 0.2)' }}>
-                {error}
-              </div>
-            )}
-
-            {/* Submit */}
-            <div className="mt-8">
-              <button
-                id="admin-submit-btn"
-                type="submit"
-                disabled={loading}
-                className="w-full py-4 rounded-2xl text-sm font-semibold text-[var(--text-main)] transition-all duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg"
-                style={{
-                  background: 'linear-gradient(135deg, var(--primary-600), var(--primary-800))',
-                }}
-              >
-                {loading ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <Loader2 size={16} className="animate-spin" /> Authenticating...
-                  </span>
-                ) : (
-                  'Sign In'
-                )}
-              </button>
-            </div>
-          </form>
-        </div>
+          {/* Submit Button */}
+          <div className="pt-2">
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 font-medium rounded-xl text-white shadow-lg shadow-cyan-500/20 transition-all duration-300 flex justify-center items-center disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            >
+              {loading ? (
+                <span className="flex items-center gap-2">
+                  <Loader2 size={18} className="animate-spin" /> جاري التحقق...
+                </span>
+              ) : (
+                'تسجيل الدخول'
+              )}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );
