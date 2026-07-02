@@ -146,7 +146,7 @@ export default function AdminDashboard() {
 
       {/* ═══════════════════ TOP NAVBAR (Frosted Glass) ══════════════════ */}
       <nav className="sticky top-0 z-50 bg-white/5 backdrop-blur-md border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+        <div className="w-full px-4 md:px-8 xl:px-12 mx-auto py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg bg-cyan-500/10 border border-cyan-500/20">
               <FlaskConical size={20} className="text-cyan-400" />
@@ -174,7 +174,7 @@ export default function AdminDashboard() {
       </nav>
 
       {/* ═══════════════════ MAIN CONTENT ════════════════════════════════ */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+      <main className="flex-1 w-full px-4 md:px-8 xl:px-12 mx-auto py-6 sm:py-10">
 
         {/* ── Tab Navigation ───────────────────────────────────────── */}
         <div className="flex items-center gap-2 mb-8 bg-slate-900/60 backdrop-blur-sm p-1.5 rounded-xl border border-slate-800 w-fit">
@@ -347,6 +347,17 @@ export default function AdminDashboard() {
                   ))}
                 </tbody>
               </table>
+
+              {/* Pagination Footer */}
+              <div className="border-t border-slate-800 p-4 flex items-center justify-between bg-slate-900/40" dir="rtl">
+                <button className="border border-slate-700 hover:bg-slate-800 text-slate-300 px-4 py-2 rounded-lg transition-all text-sm font-medium cursor-pointer">
+                  السابق
+                </button>
+                <span className="text-slate-400 text-sm">صفحة 1 من 5</span>
+                <button className="border border-slate-700 hover:bg-slate-800 text-slate-300 px-4 py-2 rounded-lg transition-all text-sm font-medium cursor-pointer">
+                  التالي
+                </button>
+              </div>
             </div>
 
             {/* ═══ Mobile Cards ════════════════════════════════════════ */}
@@ -458,6 +469,17 @@ export default function AdminDashboard() {
                   ))}
                 </tbody>
               </table>
+
+              {/* Pagination Footer */}
+              <div className="border-t border-slate-800 p-4 flex items-center justify-between bg-slate-900/40" dir="rtl">
+                <button className="border border-slate-700 hover:bg-slate-800 text-slate-300 px-4 py-2 rounded-lg transition-all text-sm font-medium cursor-pointer">
+                  السابق
+                </button>
+                <span className="text-slate-400 text-sm">صفحة 1 من 5</span>
+                <button className="border border-slate-700 hover:bg-slate-800 text-slate-300 px-4 py-2 rounded-lg transition-all text-sm font-medium cursor-pointer">
+                  التالي
+                </button>
+              </div>
             </div>
 
             {/* ═══ Mobile Cards ════════════════════════════════════════ */}
@@ -515,102 +537,96 @@ export default function AdminDashboard() {
 
       {/* ═══════════════════ MODAL ════════════════════════════════════ */}
       {showModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/70 backdrop-blur-md transition-all">
-          <div className="w-full max-w-lg bg-[#0f1a2e] border border-slate-700/50 rounded-2xl shadow-2xl shadow-cyan-500/5 relative overflow-hidden animate-fade-in-up">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 sm:p-6 transition-all">
+          <div className="bg-[#0D1529] border border-slate-700/50 rounded-3xl w-full max-w-xl p-8 shadow-2xl relative overflow-hidden animate-fade-in-up">
 
-            {/* Decorative glows */}
-            <div className="absolute -top-20 -right-20 w-40 h-40 bg-cyan-500 rounded-full mix-blend-screen filter blur-[80px] opacity-10 pointer-events-none" />
-            <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-purple-500 rounded-full mix-blend-screen filter blur-[80px] opacity-[0.07] pointer-events-none" />
+            {/* Decorative glow */}
+            <div className="absolute -top-10 -right-10 w-40 h-40 bg-cyan-500/10 rounded-full blur-[60px]" />
 
             {/* Header */}
-            <div className="relative z-10 flex justify-between items-center px-6 sm:px-8 pt-6 sm:pt-8 pb-4 border-b border-slate-800">
-              <h3 className="text-lg sm:text-xl font-bold text-white flex items-center gap-3">
-                {editingId ? (
-                  <><Edit2 className="text-cyan-400" size={20} /> تعديل المادة</>
-                ) : (
-                  <><Package className="text-cyan-400" size={20} /> إضافة مادة جديدة</>
-                )}
+            <div className="flex justify-between items-center mb-8">
+              <h3 className="text-2xl font-bold text-white">
+                {editingId ? 'تعديل بيانات المادة' : 'إضافة مادة جديدة'}
               </h3>
               <button
                 onClick={() => setShowModal(false)}
-                className="p-2 rounded-lg hover:bg-white/5 text-slate-500 hover:text-slate-300 transition-colors cursor-pointer"
+                className="p-2 rounded-full hover:bg-white/10 text-slate-400 hover:text-white transition-all cursor-pointer"
               >
-                <X size={18} />
+                <X size={20} />
               </button>
             </div>
 
             {/* Form */}
-            <form onSubmit={handleSubmit} className="relative z-10 px-6 sm:px-8 py-6 space-y-5" dir="rtl">
-              <div>
-                <label className="block text-xs font-semibold mb-2 text-slate-400 uppercase tracking-wider">اسم المادة الكيميائية</label>
-                <input
-                  required
-                  value={formData.materialName}
-                  onChange={e => setFormData({...formData, materialName: e.target.value})}
-                  placeholder="مثال: حمض الهيدروكلوريك"
-                  className="w-full px-4 py-3 rounded-xl text-sm bg-slate-800/60 border border-slate-700/50 text-white placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 transition-all"
-                />
-              </div>
-
-              <div className="flex flex-col sm:flex-row gap-4">
-                <div className="flex-1">
-                  <label className="block text-xs font-semibold mb-2 text-slate-400 uppercase tracking-wider">الدولاب</label>
+            <form onSubmit={handleSubmit} className="space-y-6" dir="rtl">
+              <div className="grid grid-cols-1 gap-5">
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-slate-400">اسم المادة</label>
                   <input
                     required
-                    value={formData.cabinet}
-                    onChange={e => setFormData({...formData, cabinet: e.target.value})}
-                    placeholder="مثال: دولاب أ"
-                    className="w-full px-4 py-3 rounded-xl text-sm bg-slate-800/60 border border-slate-700/50 text-white placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 transition-all"
+                    value={formData.materialName}
+                    onChange={e => setFormData({...formData, materialName: e.target.value})}
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl p-4 text-white focus:ring-2 focus:ring-cyan-500 outline-none transition-all"
                   />
                 </div>
-                <div className="flex-1">
-                  <label className="block text-xs font-semibold mb-2 text-slate-400 uppercase tracking-wider">الرف</label>
-                  <input
-                    value={formData.shelf}
-                    onChange={e => setFormData({...formData, shelf: e.target.value})}
-                    placeholder="مثال: الرف 2"
-                    className="w-full px-4 py-3 rounded-xl text-sm bg-slate-800/60 border border-slate-700/50 text-white placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 transition-all"
-                  />
-                </div>
-              </div>
 
-              <div className="flex flex-col sm:flex-row gap-4">
-                <div className="flex-1">
-                  <label className="block text-xs font-semibold mb-2 text-slate-400 uppercase tracking-wider">الكمية / العدد</label>
-                  <input
-                    type="number"
-                    min="0"
-                    required
-                    value={formData.quantity}
-                    onChange={e => setFormData({...formData, quantity: parseInt(e.target.value) || 0})}
-                    className="w-full px-4 py-3 rounded-xl text-sm bg-slate-800/60 border border-slate-700/50 text-white placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 transition-all font-mono"
-                  />
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-slate-400">الدولاب</label>
+                    <input
+                      required
+                      value={formData.cabinet}
+                      onChange={e => setFormData({...formData, cabinet: e.target.value})}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-4 text-white focus:ring-2 focus:ring-cyan-500 outline-none transition-all"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-slate-400">الرف</label>
+                    <input
+                      value={formData.shelf}
+                      onChange={e => setFormData({...formData, shelf: e.target.value})}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-4 text-white focus:ring-2 focus:ring-cyan-500 outline-none transition-all"
+                    />
+                  </div>
                 </div>
-                <div className="flex-1">
-                  <label className="block text-xs font-semibold mb-2 text-slate-400 uppercase tracking-wider">الحالة</label>
-                  <select
-                    value={formData.isAvailable}
-                    onChange={e => setFormData({...formData, isAvailable: e.target.value === 'true'})}
-                    className="w-full px-4 py-3 rounded-xl text-sm bg-slate-800/60 border border-slate-700/50 text-white focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 transition-all appearance-none cursor-pointer"
-                  >
-                    <option value="true">متوفر</option>
-                    <option value="false">غير متوفر / نافذ</option>
-                  </select>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-slate-400">الكمية</label>
+                    <input
+                      type="number"
+                      min="0"
+                      required
+                      value={formData.quantity}
+                      onChange={e => setFormData({...formData, quantity: parseInt(e.target.value) || 0})}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-4 text-white focus:ring-2 focus:ring-cyan-500 outline-none transition-all font-mono"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-slate-400">الحالة</label>
+                    <select
+                      value={formData.isAvailable}
+                      onChange={e => setFormData({...formData, isAvailable: e.target.value === 'true'})}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-4 text-white focus:ring-2 focus:ring-cyan-500 outline-none transition-all appearance-none cursor-pointer"
+                    >
+                      <option value="true">متوفر</option>
+                      <option value="false">غير متوفر</option>
+                    </select>
+                  </div>
                 </div>
               </div>
 
               {/* Actions */}
-              <div className="flex justify-end gap-3 pt-4 border-t border-slate-800">
+              <div className="flex gap-3 pt-4">
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="px-5 py-2.5 rounded-xl text-sm font-medium text-slate-400 bg-slate-800/60 hover:bg-slate-700/60 border border-slate-700/50 transition-colors cursor-pointer"
+                  className="flex-1 px-6 py-4 rounded-xl text-slate-300 bg-slate-800 hover:bg-slate-700 transition-all cursor-pointer"
                 >
                   إلغاء
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 rounded-xl text-sm font-bold text-white bg-cyan-600 hover:bg-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.3)] transition-all duration-300 cursor-pointer hover:-translate-y-0.5"
+                  className="flex-1 px-6 py-4 rounded-xl text-white bg-cyan-600 hover:bg-cyan-500 shadow-lg shadow-cyan-900/20 transition-all cursor-pointer"
                 >
                   {editingId ? 'حفظ التعديلات' : 'إضافة المادة'}
                 </button>
