@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ShieldCheck, LogOut, Plus, Edit2, Trash2, Package, Search, Clock, List, FileText } from 'lucide-react';
+import { ShieldCheck, LogOut, Plus, Edit2, Trash2, Package, Search, Clock, List, FileText, MapPin } from 'lucide-react';
 import { getMaterials, createMaterial, updateMaterial, deleteMaterial, getAuditLogs } from '../api';
 
 export default function AdminDashboard() {
