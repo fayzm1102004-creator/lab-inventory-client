@@ -34,8 +34,7 @@ export default function UserSearch() {
         fetch(`${apiUrl}/user/logout`, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Basic ' + btoa('11310561:60-dayfreetrial')
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({ logId }),
           keepalive: true

@@ -8,8 +8,7 @@ if (API_URL && !API_URL.endsWith('/api')) {
 const API = axios.create({
   baseURL: API_URL,
   headers: { 
-    'Content-Type': 'application/json',
-    'Authorization': 'Basic ' + btoa('11310561:60-dayfreetrial')
+    'Content-Type': 'application/json'
   },
 });
 
@@ -17,7 +16,11 @@ const API = axios.create({
 API.interceptors.request.use((config) => {
   const token = localStorage.getItem('adminToken');
   if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+    if (config.headers && typeof config.headers.set === 'function') {
+      config.headers.set('Authorization', `Bearer ${token}`);
+    } else {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
   }
   return config;
 });
