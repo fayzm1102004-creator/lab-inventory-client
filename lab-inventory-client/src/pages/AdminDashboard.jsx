@@ -198,101 +198,169 @@ export default function AdminDashboard() {
               </button>
             </div>
 
-            <div className="bg-[var(--table-bg)] border border-[var(--border-subtle)] overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full text-center text-sm whitespace-nowrap">
-                  <thead className="bg-[var(--table-header)] border-b border-[var(--border-subtle)]">
+            {/* Desktop Table */}
+            <div className="hidden md:block bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+              <table className="w-full text-center text-sm whitespace-nowrap" dir="rtl">
+                <thead className="bg-slate-50 border-b border-slate-200">
+                  <tr>
+                    <th className="px-6 py-4 font-bold text-slate-600 text-right">اسم المادة</th>
+                    <th className="px-6 py-4 font-bold text-slate-600 text-right">المكان</th>
+                    <th className="px-6 py-4 font-bold text-slate-600 text-center">الحالة</th>
+                    <th className="px-6 py-4 font-bold text-slate-600 text-center">الكمية</th>
+                    <th className="px-6 py-4 font-bold text-slate-600 text-center">إجراءات</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {materials.length === 0 ? (
                     <tr>
-                      <th className="px-6 py-4 font-medium text-[var(--text-muted)] text-left">Name</th>
-                      <th className="px-6 py-4 font-medium text-[var(--text-muted)] text-left">Location</th>
-                      <th className="px-6 py-4 font-medium text-[var(--text-muted)] text-center">Status</th>
-                      <th className="px-6 py-4 font-medium text-[var(--text-muted)] text-center">Qty</th>
-                      <th className="px-6 py-4 font-medium text-[var(--text-muted)] text-center">Actions</th>
+                      <td colSpan="5" className="px-6 py-8 text-center text-slate-400">
+                        لا توجد مواد مسجلة حالياً.
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[var(--border-subtle)]">
-                    {materials.length === 0 ? (
-                      <tr>
-                        <td colSpan="5" className="px-6 py-8 text-center text-[var(--text-dim)]">
-                          No materials found. Add one to get started.
-                        </td>
-                      </tr>
-                    ) : materials.map(m => (
-                      <tr key={m.id} className="hover:bg-[var(--bg-hover)] transition-colors">
-                        <td className="px-6 py-4 text-[var(--text-main)] font-medium text-left">{m.materialName}</td>
-                        <td className="px-6 py-4 text-[var(--text-muted)] text-left">{m.physicalLocation}</td>
-                        <td className="px-6 py-4 text-center">
-                          <span className={`inline-block px-3 py-1 rounded-full text-xs ${
-                            m.isAvailable 
-                              ? 'bg-[#51cf661a] text-[var(--success-500)]' 
-                              : 'bg-[#ff6b6b1a] text-[var(--danger-500)]'
-                          }`}>
-                            {m.isAvailable ? 'Available' : 'Unavailable'}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 text-[var(--text-muted)] text-center">{m.quantity}</td>
-                        <td className="px-6 py-4 flex justify-center gap-2">
-                          <button
-                            onClick={() => openModal(m)}
-                            className="p-2 rounded-lg text-[var(--primary-400)] hover:bg-[#5c7cfa1a] transition-colors"
-                          >
-                            <Edit2 size={16} />
-                          </button>
-                          <button
-                            onClick={() => handleDelete(m.id)}
-                            className="p-2 rounded-lg text-[var(--danger-500)] hover:bg-[#ff6b6b1a] transition-colors"
-                          >
-                            <Trash2 size={16} />
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                  ) : materials.map(m => (
+                    <tr key={m.id} className="hover:bg-slate-50 transition-colors">
+                      <td className="px-6 py-4 text-slate-800 font-bold text-right">{m.materialName}</td>
+                      <td className="px-6 py-4 text-slate-500 text-right">{m.physicalLocation}</td>
+                      <td className="px-6 py-4 text-center">
+                        <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${
+                          m.isAvailable 
+                            ? 'bg-green-100 text-green-700' 
+                            : 'bg-red-100 text-red-700'
+                        }`}>
+                          {m.isAvailable ? 'متوفر' : 'غير متوفر'}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-slate-600 font-bold text-center">{m.quantity}</td>
+                      <td className="px-6 py-4 flex justify-center gap-2">
+                        <button
+                          onClick={() => openModal(m)}
+                          className="p-2 rounded-lg text-blue-500 hover:bg-blue-50 transition-colors"
+                        >
+                          <Edit2 size={18} />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(m.id)}
+                          className="p-2 rounded-lg text-red-500 hover:bg-red-50 transition-colors"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile Cards */}
+            <div className="md:hidden space-y-4" dir="rtl">
+              {materials.length === 0 ? (
+                <div className="p-8 text-center text-slate-400 bg-white rounded-2xl border border-slate-200">
+                  لا توجد مواد مسجلة حالياً.
+                </div>
+              ) : materials.map(m => (
+                <div key={m.id} className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm relative">
+                  <div className="flex justify-between items-start mb-3">
+                    <h4 className="font-bold text-lg text-slate-800">{m.materialName}</h4>
+                    <div className="flex gap-1">
+                      <button onClick={() => openModal(m)} className="p-2 text-blue-500 bg-blue-50 rounded-lg"><Edit2 size={16} /></button>
+                      <button onClick={() => handleDelete(m.id)} className="p-2 text-red-500 bg-red-50 rounded-lg"><Trash2 size={16} /></button>
+                    </div>
+                  </div>
+                  <div className="text-sm text-slate-500 mb-4 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                    <MapPin size={14} className="inline ml-1 text-slate-400" /> {m.physicalLocation}
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className={`px-3 py-1 rounded-full text-xs font-bold ${m.isAvailable ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                      {m.isAvailable ? 'متوفر' : 'غير متوفر'}
+                    </span>
+                    <span className="text-sm font-bold text-slate-600 bg-slate-100 px-3 py-1 rounded-lg">الكمية: {m.quantity}</span>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         ) : (
           <div className="animate-fade-in-up">
              <h2 className="text-lg font-semibold text-[var(--text-main)] mb-6">User Activity Logs</h2>
              
-             <div className="bg-[var(--table-bg)] border border-[var(--border-subtle)] overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full text-center text-sm whitespace-nowrap">
-                  <thead className="bg-[var(--table-header)] border-b border-[var(--border-subtle)]">
+             {/* Desktop Table */}
+             <div className="hidden md:block bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+              <table className="w-full text-center text-sm whitespace-nowrap" dir="rtl">
+                <thead className="bg-slate-50 border-b border-slate-200">
+                  <tr>
+                    <th className="px-6 py-4 font-bold text-slate-600 text-right">اسم المستخدم</th>
+                    <th className="px-6 py-4 font-bold text-slate-600 text-center">وقت الدخول</th>
+                    <th className="px-6 py-4 font-bold text-slate-600 text-center">عمليات البحث</th>
+                    <th className="px-6 py-4 font-bold text-slate-600 text-center">وقت الخروج</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {auditLogs.length === 0 ? (
                     <tr>
-                      <th className="px-6 py-4 font-medium text-[var(--text-muted)] text-left">User</th>
-                      <th className="px-6 py-4 font-medium text-[var(--text-muted)] text-center">Login Time</th>
-                      <th className="px-6 py-4 font-medium text-[var(--text-muted)] text-center">Searched Keywords</th>
-                      <th className="px-6 py-4 font-medium text-[var(--text-muted)] text-center">Logout Time</th>
+                      <td colSpan="4" className="px-6 py-8 text-center text-slate-400">
+                        لا يوجد سجل نشاطات حتى الآن.
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[var(--border-subtle)]">
-                    {auditLogs.length === 0 ? (
-                      <tr>
-                        <td colSpan="4" className="px-6 py-8 text-center text-[var(--text-dim)]">
-                          No audit logs recorded yet.
-                        </td>
-                      </tr>
-                    ) : auditLogs.map(log => (
-                      <tr key={log.logId} className="hover:bg-[var(--bg-hover)] transition-colors">
-                        <td className="px-6 py-4 text-[var(--text-main)] font-medium text-left">{log.userName}</td>
-                        <td className="px-6 py-4 text-[var(--text-muted)] text-center">{formatDate(log.loginTime)}</td>
-                        <td className="px-6 py-4 text-[var(--text-muted)] italic text-center">
-                          {log.searchKeywords || '—'}
-                        </td>
-                        <td className="px-6 py-4 text-[var(--text-muted)] text-center flex justify-center">
-                          {log.logoutTime ? formatDate(log.logoutTime) : (
-                            <span className="text-[var(--success-500)] flex items-center justify-center gap-1">
-                              <span className="w-2 h-2 rounded-full bg-[var(--success-500)] animate-pulse" /> Active
-                            </span>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                  ) : auditLogs.map(log => (
+                    <tr key={log.logId} className="hover:bg-slate-50 transition-colors">
+                      <td className="px-6 py-4 text-slate-800 font-bold text-right">{log.userName}</td>
+                      <td className="px-6 py-4 text-slate-500 text-center" dir="ltr">{formatDate(log.loginTime)}</td>
+                      <td className="px-6 py-4 text-slate-500 italic text-center">
+                        {log.searchKeywords || '—'}
+                      </td>
+                      <td className="px-6 py-4 text-slate-500 text-center flex justify-center" dir="ltr">
+                        {log.logoutTime ? formatDate(log.logoutTime) : (
+                          <span className="text-green-500 font-bold flex items-center justify-center gap-2 bg-green-50 px-3 py-1 rounded-full">
+                            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" /> متصل الآن
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile Cards */}
+            <div className="md:hidden space-y-4" dir="rtl">
+              {auditLogs.length === 0 ? (
+                <div className="p-8 text-center text-slate-400 bg-white rounded-2xl border border-slate-200">
+                  لا يوجد سجل نشاطات حتى الآن.
+                </div>
+              ) : auditLogs.map(log => (
+                <div key={log.logId} className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm relative">
+                  <div className="flex justify-between items-start mb-3">
+                    <h4 className="font-bold text-lg text-slate-800">{log.userName}</h4>
+                    {!log.logoutTime && (
+                      <span className="text-green-500 text-xs font-bold flex items-center gap-1 bg-green-50 px-2 py-1 rounded-full">
+                        <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" /> متصل
+                      </span>
+                    )}
+                  </div>
+                  
+                  <div className="space-y-2 mb-3">
+                    <div className="text-xs flex justify-between bg-slate-50 p-2 rounded-lg">
+                      <span className="text-slate-500">الدخول:</span>
+                      <span className="font-bold text-slate-700" dir="ltr">{formatDate(log.loginTime)}</span>
+                    </div>
+                    {log.logoutTime && (
+                      <div className="text-xs flex justify-between bg-slate-50 p-2 rounded-lg">
+                        <span className="text-slate-500">الخروج:</span>
+                        <span className="font-bold text-slate-700" dir="ltr">{formatDate(log.logoutTime)}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {log.searchKeywords && (
+                    <div className="text-sm">
+                      <span className="text-slate-400 block mb-1 text-xs">كلمات البحث:</span>
+                      <p className="text-slate-700 bg-blue-50/50 p-2 rounded-lg italic text-xs leading-relaxed">
+                        {log.searchKeywords}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
         )}
