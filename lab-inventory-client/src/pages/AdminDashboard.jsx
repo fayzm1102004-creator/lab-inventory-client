@@ -11,6 +11,7 @@ export default function AdminDashboard() {
   const [materials, setMaterials] = useState([]);
   const [auditLogs, setAuditLogs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   // Form state
   const [showModal, setShowModal] = useState(false);
@@ -33,6 +34,7 @@ export default function AdminDashboard() {
 
   const fetchData = async () => {
     setLoading(true);
+    setError('');
     try {
       if (activeTab === 'inventory') {
         const res = await getMaterials();
@@ -42,8 +44,11 @@ export default function AdminDashboard() {
         setAuditLogs(res.data);
       }
     } catch (err) {
-      if (err.response?.status === 401) {
-        handleLogout();
+      console.error('Fetch error:', err);
+      if (err.response?.status === 401 || err.response?.status === 403) {
+        setError(' انتهت صلاحية الجلسة أو أنك لا تملك الصلاحية (401/403). يرجى تسجيل الدخول مجدداً.');
+      } else {
+        setError('حدث خطأ أثناء جلب البيانات: ' + (err.message || 'خطأ غير معروف'));
       }
     } finally {
       setLoading(false);
