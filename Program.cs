@@ -18,7 +18,7 @@ if (connectionUrl.StartsWith("postgres://") || connectionUrl.StartsWith("postgre
 {
     var databaseUri = new Uri(connectionUrl);
     var userInfo = databaseUri.UserInfo.Split(':');
-    connectionString = $"Host={databaseUri.Host};Port={databaseUri.Port};Database={databaseUri.LocalPath.TrimStart('/')};Username={userInfo[0]};Password={userInfo[1]};Ssl Mode=Require;Trust Server Certificate=true;";
+    connectionString = $"Host={databaseUri.Host};Port={databaseUri.Port};Database={databaseUri.LocalPath.TrimStart('/')};Username={userInfo[0]};Password={userInfo[1]};Trust Server Certificate=true;";
 }
 
 if (connectionString.Contains("Server=", StringComparison.OrdinalIgnoreCase))
