@@ -177,7 +177,7 @@ export default function AdminDashboard() {
       <main className="flex-1 w-full px-4 md:px-8 xl:px-12 mx-auto py-6 sm:py-10">
 
         {/* ── Tab Navigation ───────────────────────────────────────── */}
-        <div className="flex items-center gap-2 mb-10 bg-slate-900/60 backdrop-blur-sm p-1.5 rounded-xl border border-slate-800 w-fit">
+        <div className="flex items-center gap-2 mb-12 mx-auto justify-center bg-slate-900/60 backdrop-blur-sm p-1.5 rounded-xl border border-slate-800 w-fit">
           <button
             onClick={() => setActiveTab('inventory')}
             className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 cursor-pointer ${
@@ -232,17 +232,17 @@ export default function AdminDashboard() {
           <div className="animate-fade-in-up flex flex-col flex-1">
 
             {/* ── Header + Add Button ────────────────────────────────── */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-10">
+            <div className="flex flex-col items-center justify-center gap-6 mt-6 mb-14 text-center w-full">
               <div>
-                <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">إدارة المواد الكيميائية</h2>
-                <p className="text-sm text-slate-500 mt-1">إضافة وتعديل وحذف المواد المسجلة في مختبر الكيمياء</p>
+                <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">إدارة المواد الكيميائية</h2>
+                <p className="text-base text-slate-500 mt-2">إضافة وتعديل وحذف المواد المسجلة في مختبر الكيمياء</p>
               </div>
               <button
                 onClick={() => openModal()}
-                className="flex items-center gap-2 bg-cyan-600 hover:bg-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.4)] px-5 py-2.5 rounded-lg text-white text-sm font-medium transition-all duration-300 cursor-pointer hover:-translate-y-0.5 active:translate-y-0 shrink-0"
+                className="flex items-center gap-2 bg-cyan-600 hover:bg-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.4)] px-6 py-3 rounded-xl text-white text-sm font-bold transition-all duration-300 cursor-pointer hover:-translate-y-0.5 active:translate-y-0 shrink-0"
               >
-                <Plus size={18} />
-                إضافة مادة
+                <Plus size={20} />
+                إضافة مادة جديدة
               </button>
             </div>
 
@@ -410,9 +410,9 @@ export default function AdminDashboard() {
         ) : (
           /* ═══════════════════ AUDIT LOGS TAB ═════════════════════════ */
           <div className="animate-fade-in-up flex flex-col flex-1">
-            <div className="mb-10">
-              <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">سجل النشاطات</h2>
-              <p className="text-sm text-slate-500 mt-1">متابعة جميع عمليات تسجيل الدخول والبحث للمستخدمين</p>
+            <div className="flex flex-col items-center justify-center gap-2 mt-6 mb-14 text-center w-full">
+              <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">سجل النشاطات</h2>
+              <p className="text-base text-slate-500 mt-1">متابعة جميع عمليات تسجيل الدخول والبحث للمستخدمين</p>
             </div>
 
             {/* ═══ Desktop Table ═══════════════════════════════════════ */}
